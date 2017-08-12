@@ -1,0 +1,24 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="grid_expected_size">120dp</dimen>
+    <dimen name="ed_height">55dp</dimen>
+    <dimen name="elevation">10dp</dimen>
+    <dimen name="text_xxlarge">20sp</dimen>
+    <dimen name="text_xlarge">18sp</dimen>
+    <dimen name="text_large">16sp</dimen>
+    <dimen name="text_medium">14sp</dimen>
+    <dimen name="text_small">12sp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="corner_radius">5dp</dimen>
+    <dimen name="marker_offset_x">5dp</dimen>
+    <dimen name="marker_offset_y">65dp</dimen>
+    <!--this size is for logo and user profile picture, they must be of same size through out the app-->
+    <dimen name="image_size">80dp</dimen>
+    <dimen name="WheelItemTextSize">24sp</dimen>
+    <dimen name="WheelItemSpace">40dp</dimen>
+    <dimen name="WheelIndicatorSize">2dp</dimen>
+    <dimen name="WheelMargins">8dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+</resources>

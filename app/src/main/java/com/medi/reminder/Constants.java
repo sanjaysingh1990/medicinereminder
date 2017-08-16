@@ -15,5 +15,9 @@ public interface Constants {
 
     public static final int REQUEST_CAMERA = 1;
     public static final int REQUEST_GALLERY = 2;
+    public static final String NOTIFICATION_ID="notification_id";
+    public static final String NOTIFICATION_FOR="notification_from";
+    public static final String MEDICINE_NAME="medicine_name";
+
 
 }

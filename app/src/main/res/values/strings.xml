@@ -5,5 +5,6 @@
     <string name="choose_photo">Choose Photo</string>
     <string name="close">Close</string>
     <string name="permission_denied">Permission has been denied, you need to give permission to do the operation, press OK to open settings</string>
-
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
 </resources>

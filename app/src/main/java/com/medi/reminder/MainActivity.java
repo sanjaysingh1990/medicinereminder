@@ -31,15 +31,18 @@ import android.view.View;
 import android.widget.RemoteViews;
 
 import com.medi.reminder.databinding.ActivityMainBinding;
+import com.medi.reminder.receiver.MyReceiver;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements Constants {
     private ActivityMainBinding binding;
     private String mTmpGalleryPicturePath;
     private boolean mFirstImage;
     private boolean mSecondImage;
+    private int NOTIID;
 
     public Bitmap textAsBitmap(String text, int textColor) {
 //        String fontName = "digital-7";
@@ -81,13 +84,16 @@ public class MainActivity extends AppCompatActivity implements Constants {
     }
 
     public Notification createCustomNotification() {
+        int min = 1;
+        int max = 9999;
 
-
-        //Create Intent to launch this Activity on notification click
-        Intent intent = new Intent(this, MainActivity.class);
+        Random r = new Random();
+        NOTIID = r.nextInt(max - min + 1) + min;
+         //Create Intent to launch this Activity on notification click
+        Intent intent = new Intent();
 
         // Send data to NotificationView Class
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent,
+        PendingIntent pIntent = PendingIntent.getActivity(this, NOTIID, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         // Inflate the notification layout as RemoteViews
@@ -99,6 +105,21 @@ public class MainActivity extends AppCompatActivity implements Constants {
         contentView.setTextViewText(R.id.tvNotificationTitle, "Android Notification");
         contentView.setImageViewBitmap(R.id.tvNotificationMessage, textAsBitmap("Apply Custom Notification", color));
         contentView.setImageViewBitmap(R.id.tvNotificationMessage2, textAsBitmap("Apply Custom Notification", color));
+
+        Intent closeButton = new Intent(this, MyReceiver.class);
+        closeButton.putExtra(Constants.NOTIFICATION_ID,NOTIID);
+       // closeButton.putExtra(Constants.NOTIFICATION_FOR,1);
+        closeButton.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(this, NOTIID, closeButton,0);
+        contentView.setOnClickPendingIntent(R.id.btn_close, pendingSwitchIntent);
+
+        Intent viewDetailsButton = new Intent(this, MyReceiver.class);
+        viewDetailsButton.putExtra(Constants.NOTIFICATION_ID,NOTIID);
+        viewDetailsButton.putExtra(Constants.NOTIFICATION_FOR,2);
+        viewDetailsButton.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingViewDetails = PendingIntent.getBroadcast(this, NOTIID, viewDetailsButton, PendingIntent.FLAG_ONE_SHOT);
+        contentView.setOnClickPendingIntent(R.id.btn_view_details, pendingViewDetails);
+
 
 
         Bitmap largeIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.images);
@@ -112,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
                 .setSmallIcon(R.mipmap.ic_launcher)
 
                 // Dismiss Notification
-                .setAutoCancel(true)
+               // .setAutoCancel(true)
                 // Set PendingIntent into Notification
                 .setContentIntent(pIntent)
                 // Set RemoteViews into Notification
@@ -241,12 +262,14 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private void scheduleNotification(Notification notification, int delay) {
 
         Intent notificationIntent = new Intent(this, NotificationPublisher.class);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, NOTIID);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, NOTIID, notificationIntent,0);
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
         AlarmManager alarmManager = (AlarmManager) getSystemService(this.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+        Log.e("notiid",NOTIID+"");
+
     }
 
     private Notification getNotification(String content) {

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.TimePicker;
 
@@ -17,9 +18,6 @@ public class ChooseDateTimePickerActivity extends AppCompatActivity implements C
     ActivityChooseDateTimePickerBinding binding;
     private int mHour;
     private int mMinute;
-    private int mYear;
-    private int mMonth;
-    private int mDay;
 
 
     @Override
@@ -39,18 +37,27 @@ public class ChooseDateTimePickerActivity extends AppCompatActivity implements C
                 mMinute = minute;
             }
         });
+        Calendar calendar = Calendar.getInstance();
+
+        mHour = calendar.get(Calendar.HOUR_OF_DAY);
+        mMinute = calendar.get(Calendar.MINUTE);
+        Log.e("h:m", mHour + "," + mMinute);
+
+
+
     }
 
     public class ClickHandler {
         public void done(View view) {
             Calendar calendar = Calendar.getInstance();
+
             calendar.set(binding.datePicker.getYear(), binding.datePicker.getMonth(), binding.datePicker.getDayOfMonth(), mHour, mMinute, 0);
             Intent data = new Intent();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss a");
             String timing = simpleDateFormat.format(calendar.getTime());
-            long futureseconds=calendar.getTimeInMillis()-System.currentTimeMillis();
+            long futureseconds = calendar.getTimeInMillis() - System.currentTimeMillis();
             data.putExtra(DATETIME, timing);
-            data.putExtra(DELAYTIME,futureseconds);
+            data.putExtra(DELAYTIME, futureseconds);
             if (getIntent().getExtras().getInt(TYPE) == CHOOSESTARTDATETIME) {
                 setResult(CHOOSESTARTDATETIME, data);
             } else {

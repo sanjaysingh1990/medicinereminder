@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,10 +29,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.medi.reminder.databinding.ActivityMainBinding;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -40,8 +45,13 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private String mTmpGalleryPicturePath;
     private boolean mFirstImage;
     private boolean mSecondImage;
+    private Bitmap mFirstBitmap;
+    private Bitmap mSecondBitmap;
+    private long mStartDelay = 0;
+    private long mExpiryDelay = 0;
 
-    public Bitmap textAsBitmap(String text, int textColor) {
+
+    public Bitmap setBitmap(Bitmap bitmap) {
 //        String fontName = "digital-7";
 //        float textSize = 50;
 //        Typeface font = Typeface.createFromAsset(this.getAssets(), String.format("%s.ttf", fontName));
@@ -57,8 +67,13 @@ public class MainActivity extends AppCompatActivity implements Constants {
 //        Canvas canvas = new Canvas(image);
 //        canvas.drawText(text, 0, baseline, paint);
 //        return image;
-        Bitmap bitmap = ((BitmapDrawable) getResources()
-                .getDrawable(R.mipmap.images)).getBitmap();
+
+        if (bitmap == null) {
+            bitmap = ((BitmapDrawable) getResources()
+                    .getDrawable(R.mipmap.images)).getBitmap();
+        }
+
+
         Bitmap mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
 
 //        Rect rectangle = new Rect(0, 0, 400, 400);
@@ -80,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
         //CreateCustomNotification(this);
     }
 
-    public Notification createCustomNotification() {
+    public Notification createCustomNotification(String text) {
 
 
         //Create Intent to launch this Activity on notification click
@@ -92,16 +107,17 @@ public class MainActivity extends AppCompatActivity implements Constants {
 
         // Inflate the notification layout as RemoteViews
         RemoteViews contentView = new RemoteViews(this.getPackageName(), R.layout.custom_notification);
-
+        String notiText = binding.edittextMediname.getText() + "  " + text;
         int color = Color.BLACK;
         // Set text on a TextView in the RemoteViews programmatically.
         contentView.setTextColor(R.id.tvNotificationTitle, ContextCompat.getColor(this, android.R.color.black));
-        contentView.setTextViewText(R.id.tvNotificationTitle, "Android Notification");
-        contentView.setImageViewBitmap(R.id.tvNotificationMessage, textAsBitmap("Apply Custom Notification", color));
-        contentView.setImageViewBitmap(R.id.tvNotificationMessage2, textAsBitmap("Apply Custom Notification", color));
+        contentView.setTextViewText(R.id.tvNotificationTitle, notiText);
+        contentView.setImageViewBitmap(R.id.tvNotificationMessage, setBitmap(mFirstBitmap));
+        contentView.setImageViewBitmap(R.id.tvNotificationMessage2, setBitmap(mSecondBitmap));
 
 
         Bitmap largeIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.images);
+        Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 // Set Icon
@@ -116,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
                 // Set PendingIntent into Notification
                 .setContentIntent(pIntent)
                 // Set RemoteViews into Notification
-                .setContent(contentView)
+                .setContent(contentView).setSound(uri)
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText("Android Notification"));
 
@@ -139,15 +155,32 @@ public class MainActivity extends AppCompatActivity implements Constants {
         if (data != null && requestCode == CHOOSESTARTDATETIME) {
             Log.e("date", data.getExtras().getString(DATETIME));
             Log.e("delaytime", data.getExtras().getLong(DELAYTIME) + "");
+            mStartDelay = data.getExtras().getLong(DELAYTIME);
+
             binding.textStartTime.setText(data.getExtras().getString(DATETIME));
+
         } else if (data != null && requestCode == CHOOSEEXPIRYDATETIME) {
             Log.e("date", data.getExtras().getString(DATETIME));
+            mExpiryDelay = data.getExtras().getLong(DELAYTIME);
             binding.textExpiryTime.setText(data.getExtras().getString(DATETIME));
         } else if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CAMERA:
                     mTmpGalleryPicturePath = getOriginalImagePath();
+                    Bitmap bitmap = getBitmap(mTmpGalleryPicturePath);
+                    if (mFirstImage) {
 
+                        if (bitmap != null) {
+                            binding.imageView1.setImageBitmap(bitmap);
+                            mFirstBitmap = bitmap;
+
+                        }
+                    } else {
+                        if (bitmap != null) {
+                            binding.imageView2.setImageBitmap(bitmap);
+                            mSecondBitmap = bitmap;
+                        }
+                    }
                     break;
 
                 case REQUEST_GALLERY:
@@ -180,15 +213,29 @@ public class MainActivity extends AppCompatActivity implements Constants {
         Uri selectedImage = data.getData();
         mTmpGalleryPicturePath = getPathFromURI(selectedImage);
         if (mTmpGalleryPicturePath != null) {
+            Bitmap bitmap = getBitmap(mTmpGalleryPicturePath);
+            if (mFirstImage) {
 
+                if (bitmap != null) {
+                    binding.imageView1.setImageBitmap(bitmap);
+                    mFirstBitmap = bitmap;
+
+                }
+            } else {
+                if (bitmap != null) {
+                    binding.imageView2.setImageBitmap(bitmap);
+                    mSecondBitmap = bitmap;
+                }
+            }
         } else {
             try {
                 InputStream is = getContentResolver().openInputStream(selectedImage);
                 if (mFirstImage) {
                     binding.imageView1.setImageBitmap(BitmapFactory.decodeStream(is));
+                    mFirstBitmap = BitmapFactory.decodeStream(is);
                 } else {
                     binding.imageView2.setImageBitmap(BitmapFactory.decodeStream(is));
-
+                    mSecondBitmap = BitmapFactory.decodeStream(is);
                 }
                 mTmpGalleryPicturePath = selectedImage.getPath();
 
@@ -197,6 +244,23 @@ public class MainActivity extends AppCompatActivity implements Constants {
                 e.printStackTrace();
             }
         }
+    }
+
+    public Bitmap getBitmap(String path) {
+//        Bitmap bitmap = null;
+//        try {
+//             File f = new File(path);
+//            BitmapFactory.Options options = new BitmapFactory.Options();
+//            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+//
+//            bitmap = BitmapFactory.decodeStream(new FileInputStream(f), null, options);
+//
+//        } catch (Exception e) {
+//
+//            Log.e("imageerror",e.getMessage()+"");
+//        }
+        return CompressImage.compressImage(path);
+
     }
 
     /*
@@ -214,34 +278,34 @@ public class MainActivity extends AppCompatActivity implements Constants {
         return cursor.getString(column_index_data);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.main, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.action_5:
+//                scheduleNotification(createCustomNotification(), 5000);
+//                return true;
+//            case R.id.action_10:
+//                scheduleNotification(getNotification("10 second delay"), 10000);
+//                return true;
+//            case R.id.action_30:
+//                scheduleNotification(getNotification("30 second delay"), 30000);
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_5:
-                scheduleNotification(createCustomNotification(), 5000);
-                return true;
-            case R.id.action_10:
-                scheduleNotification(getNotification("10 second delay"), 10000);
-                return true;
-            case R.id.action_30:
-                scheduleNotification(getNotification("30 second delay"), 30000);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void scheduleNotification(Notification notification, int delay) {
-
+    private void scheduleNotification(Notification notification, long delay) {
+        int notiId = (int) System.currentTimeMillis();
         Intent notificationIntent = new Intent(this, NotificationPublisher.class);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, notiId);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
@@ -322,7 +386,41 @@ public class MainActivity extends AppCompatActivity implements Constants {
 
         }
 
-        public void chooseImage(View view) {
+        public void setReminder(View view) {
+            if (mStartDelay <= 0) {
+                showMessage("please select future time");
+            } else if (binding.edittextMediname.getText().length() == 0) {
+                binding.edittextMediname.setError("can't be empty");
+            } else {
+                scheduleNotification(createCustomNotification(binding.textStartTime.getText().toString()), 5000);
+                showMessage("alert set");
+                binding.edittextMediname.setText(null);
+                binding.textStartTime.setText("Start Time");
+                resetImages();
+            }
+
+        }
+
+        public void setExpiry(View view) {
+            if (mExpiryDelay <= 0) {
+                showMessage("please select future time");
+            } else if (binding.edittextMediname.getText().length() == 0) {
+                binding.edittextMediname.setError("can't be empty");
+            } else {
+
+                scheduleNotification(createCustomNotification(binding.textExpiryTime.getText().toString()), 5000);
+                showMessage("alert set");
+                binding.edittextMediname.setText(null);
+                binding.textExpiryTime.setText("End Time");
+                resetImages();
+            }
+        }
+
+        private void resetImages() {
+            Bitmap bitmap = ((BitmapDrawable) getResources()
+                    .getDrawable(R.mipmap.ic_add_image)).getBitmap();
+            binding.imageView1.setImageBitmap(bitmap);
+            binding.imageView2.setImageBitmap(bitmap);
 
         }
 
@@ -337,6 +435,11 @@ public class MainActivity extends AppCompatActivity implements Constants {
             mSecondImage = true;
             getProfileImage();
         }
+    }
+
+    private void showMessage(String message) {
+        Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+
     }
 
 

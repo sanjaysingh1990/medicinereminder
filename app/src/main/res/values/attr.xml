@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="MaterialTapTargetPromptTheme" format="reference" />
+    <attr name="target" format="reference" />
+    <attr name="primaryText" format="string" />
+    <attr name="secondaryText" format="string" />
+    <attr name="primaryTextColour" format="color" />
+    <attr name="secondaryTextColour" format="color" />
+    <attr name="backgroundColour" format="color" />
+    <attr name="focalColour" format="color" />
+    <attr name="focalRadius" format="dimension" />
+    <attr name="primaryTextSize" format="dimension" />
+    <attr name="secondaryTextSize" format="dimension" />
+    <attr name="maxTextWidth" format="dimension" />
+    <attr name="textPadding" format="dimension" />
+    <attr name="focalToTextPadding" format="dimension" />
+    <attr name="textSeparation" format="dimension" />
+    <attr name="autoDismiss" format="boolean" />
+    <attr name="autoFinish" format="boolean" />
+    <attr name="captureTouchEventOutsidePrompt" format="boolean" />
+    <attr name="captureTouchEventOnFocal" format="boolean" />
+    <attr name="primaryTextFontFamily" format="string" />
+    <attr name="secondaryTextFontFamily" format="string" />
+    <attr name="primaryTextStyle" format="enum">
+        <enum name="normal" value="0" />
+        <enum name="bold" value="1" />
+        <enum name="italic" value="2" />
+    </attr>
+    <attr name="secondaryTextStyle" format="enum">
+        <enum name="normal" value="0" />
+        <enum name="bold" value="1" />
+        <enum name="italic" value="2" />
+    </attr>
+    <attr name="primaryTextTypeface" format="enum">
+        <enum name="normal" value="0" />
+        <enum name="sans" value="1" />
+        <enum name="serif" value="2" />
+        <enum name="monospace" value="3" />
+    </attr>
+    <attr name="secondaryTextTypeface" format="enum">
+        <enum name="normal" value="0" />
+        <enum name="sans" value="1" />
+        <enum name="serif" value="2" />
+        <enum name="monospace" value="3" />
+    </attr>
+    <attr name="iconTint" format="reference" />
+    <attr name="iconTintMode" format="enum">
+        <enum name="SRC_OVER" value="3" />
+        <enum name="SRC_IN" value="5" />
+        <enum name="SRC_ATOP" value="9" />
+        <enum name="MULTIPLY" value="14" />
+        <enum name="SCREEN" value="15" />
+        <enum name="ADD" value="16" />
+    </attr>
+    <attr name="iconColourFilter" format="color" />
+    <declare-styleable name="PromptView">
+        <attr name="target" />
+        <attr name="primaryText" />
+        <attr name="secondaryText" />
+        <attr name="primaryTextColour" />
+        <attr name="secondaryTextColour" />
+        <attr name="backgroundColour" />
+        <attr name="focalColour" />
+        <attr name="focalRadius" />
+        <attr name="primaryTextSize" />
+        <attr name="secondaryTextSize" />
+        <attr name="maxTextWidth" />
+        <attr name="textPadding" />
+        <attr name="focalToTextPadding" />
+        <attr name="textSeparation" />
+        <attr name="autoDismiss" />
+        <attr name="autoFinish" />
+        <attr name="captureTouchEventOutsidePrompt" />
+        <attr name="captureTouchEventOnFocal" />
+        <attr name="primaryTextFontFamily" />
+        <attr name="secondaryTextFontFamily" />
+        <attr name="primaryTextStyle" />
+        <attr name="secondaryTextStyle" />
+        <attr name="primaryTextTypeface" />
+        <attr name="secondaryTextTypeface" />
+        <attr name="iconTint" />
+        <attr name="iconTintMode" />
+        <attr name="iconColourFilter" />
+    </declare-styleable>
+
+    <declare-styleable name="ViewPagerIndicator">
+        <attr name="selectedColor" format="color" />
+        <attr name="deselectedColor" format="color" />
+        <attr name="selectedDrawable" format="reference" />
+        <attr name="deselectedDrawable" format="reference" />
+        <attr name="indicatorSpacing" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="WheelPicker">
+        <attr name="wheel_data" format="reference" />
+        <attr name="wheel_selected_item_position" format="integer" />
+        <attr name="wheel_item_text_size" format="dimension" />
+        <attr name="wheel_item_text_color" format="color" />
+        <attr name="wheel_selected_item_text_color" format="color" />
+        <attr name="wheel_same_width" format="boolean" />
+        <attr name="wheel_maximum_width_text" format="string" />
+        <attr name="wheel_maximum_width_text_position" format="integer" />
+        <attr name="wheel_visible_item_count" format="integer" />
+        <attr name="wheel_item_space" format="dimension" />
+        <attr name="wheel_cyclic" format="boolean" />
+        <attr name="wheel_indicator" format="boolean" />
+        <attr name="wheel_indicator_color" format="color" />
+        <attr name="wheel_indicator_size" format="dimension" />
+        <attr name="wheel_curtain" format="boolean" />
+        <attr name="wheel_curtain_color" format="color" />
+        <attr name="wheel_atmospheric" format="boolean" />
+        <attr name="wheel_curved" format="boolean" />
+        <attr name="wheel_item_align" format="enum">
+            <enum name="center" value="0" />
+            <enum name="left" value="1" />
+            <enum name="right" value="2" />
+        </attr>
+        <attr name="wheel_font_path" format="string" />
+    </declare-styleable>
+    <declare-styleable name="CircleImageView">
+        <attr name="civ_border_width" format="dimension" />
+        <attr name="civ_border_color" format="color" />
+        <attr name="civ_border_overlay" format="boolean" />
+        <attr name="civ_fill_color" format="color" />
+    </declare-styleable>
+</resources>

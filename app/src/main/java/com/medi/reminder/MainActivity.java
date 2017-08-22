@@ -11,8 +11,6 @@ import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -21,13 +19,17 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.medi.reminder.databinding.ActivityMainBinding;
@@ -47,7 +49,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private long mStartDelay = 0;
     private long mExpiryDelay = 0;
     private int NOTIID;
-
 
     public Bitmap setBitmap(Bitmap bitmap) {
 //        String fontName = "digital-7";
@@ -85,13 +86,59 @@ public class MainActivity extends AppCompatActivity implements Constants {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setClickEvent(new ClickHandler());
-
+        setSupportActionBar(binding.toolbar);
+        initNavigationDrawer();
 
     }
 
-    public void onCreateNotification(View view) {
-        //CreateCustomNotification(this);
+
+    public void initNavigationDrawer() {
+
+        binding.navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+
+                int id = menuItem.getItemId();
+
+                switch (id) {
+                    case R.id.home:
+                        Toast.makeText(getApplicationContext(), "Home", Toast.LENGTH_SHORT).show();
+                        binding.drawer.closeDrawers();
+                        break;
+                    case R.id.settings:
+                        Toast.makeText(getApplicationContext(), "Settings", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.history:
+                        startActivity(new Intent(MainActivity.this, HistoryActivity.class));
+                        binding.drawer.closeDrawers();
+                        break;
+                    case R.id.logout:
+                        finish();
+
+                }
+                return true;
+            }
+        });
+        View header = binding.navigationView.getHeaderView(0);
+        TextView tv_email = (TextView) header.findViewById(R.id.tv_email);
+        tv_email.setText("raj.amalw@learn2crack.com");
+
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.drawer, binding.toolbar, R.string.drawer_open, R.string.drawer_close) {
+
+            @Override
+            public void onDrawerClosed(View v) {
+                super.onDrawerClosed(v);
+            }
+
+            @Override
+            public void onDrawerOpened(View v) {
+                super.onDrawerOpened(v);
+            }
+        };
+        binding.drawer.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
     }
+
 
     public Notification createCustomNotification(String text) {
 
@@ -112,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
         RemoteViews contentView = new RemoteViews(this.getPackageName(), R.layout.custom_notification);
 
         // Set text on a TextView in the RemoteViews programmatically.
-        String notificationText = "Expiry At: " + binding.textExpiryTime.getText();
+        String notificationText = "Expiry At: " + binding.content.textExpiryTime.getText();
         contentView.setTextColor(R.id.tvNotificationTitle, ContextCompat.getColor(this, android.R.color.black));
         contentView.setTextViewText(R.id.tvNotificationTitle, notificationText);
         contentView.setImageViewBitmap(R.id.tvNotificationMessage, setBitmap(mFirstBitmap));
@@ -129,8 +176,8 @@ public class MainActivity extends AppCompatActivity implements Constants {
         Intent viewDetailsButton = new Intent(this, MyReceiver.class);
         viewDetailsButton.putExtra(Constants.NOTIFICATION_ID, NOTIID);
         viewDetailsButton.putExtra(Constants.NOTIFICATION_FOR, 2);
-        viewDetailsButton.putExtra(Constants.MEDICINE_EXPIRY_TIME, binding.textExpiryTime.getText().toString());
-        viewDetailsButton.putExtra(Constants.MEDICINE_NAME, binding.edittextMediname.getText().toString());
+        viewDetailsButton.putExtra(Constants.MEDICINE_EXPIRY_TIME, binding.content.textExpiryTime.getText().toString());
+        viewDetailsButton.putExtra(Constants.MEDICINE_NAME, binding.content.edittextMediname.getText().toString());
 
         viewDetailsButton.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingViewDetails = PendingIntent.getBroadcast(this, NOTIID, viewDetailsButton, PendingIntent.FLAG_ONE_SHOT);
@@ -180,12 +227,12 @@ public class MainActivity extends AppCompatActivity implements Constants {
             // Log.e("delaytime", data.getExtras().getLong(DELAYTIME) + "");
             mStartDelay = data.getExtras().getLong(DELAYTIME);
 
-            binding.textStartTime.setText(data.getExtras().getString(DATETIME));
+            binding.content.textStartTime.setText(data.getExtras().getString(DATETIME));
 
         } else if (data != null && requestCode == CHOOSEEXPIRYDATETIME) {
             // Log.e("date", data.getExtras().getString(DATETIME));
             mExpiryDelay = data.getExtras().getLong(DELAYTIME);
-            binding.textExpiryTime.setText(data.getExtras().getString(DATETIME));
+            binding.content.textExpiryTime.setText(data.getExtras().getString(DATETIME));
         } else if (resultCode == Activity.RESULT_OK) {
             switch (requestCode) {
                 case REQUEST_CAMERA:
@@ -194,13 +241,13 @@ public class MainActivity extends AppCompatActivity implements Constants {
                     if (mFirstImage) {
 
                         if (bitmap != null) {
-                            binding.imageView1.setImageBitmap(bitmap);
+                            binding.content.imageView1.setImageBitmap(bitmap);
                             mFirstBitmap = bitmap;
 
                         }
                     } else {
                         if (bitmap != null) {
-                            binding.imageView2.setImageBitmap(bitmap);
+                            binding.content.imageView2.setImageBitmap(bitmap);
                             mSecondBitmap = bitmap;
                         }
                     }
@@ -240,13 +287,13 @@ public class MainActivity extends AppCompatActivity implements Constants {
             if (mFirstImage) {
 
                 if (bitmap != null) {
-                    binding.imageView1.setImageBitmap(bitmap);
+                    binding.content.imageView1.setImageBitmap(bitmap);
                     mFirstBitmap = bitmap;
 
                 }
             } else {
                 if (bitmap != null) {
-                    binding.imageView2.setImageBitmap(bitmap);
+                    binding.content.imageView2.setImageBitmap(bitmap);
                     mSecondBitmap = bitmap;
                 }
             }
@@ -254,10 +301,10 @@ public class MainActivity extends AppCompatActivity implements Constants {
             try {
                 InputStream is = getContentResolver().openInputStream(selectedImage);
                 if (mFirstImage) {
-                    binding.imageView1.setImageBitmap(BitmapFactory.decodeStream(is));
+                    binding.content.imageView1.setImageBitmap(BitmapFactory.decodeStream(is));
                     mFirstBitmap = BitmapFactory.decodeStream(is);
                 } else {
-                    binding.imageView2.setImageBitmap(BitmapFactory.decodeStream(is));
+                    binding.content.imageView2.setImageBitmap(BitmapFactory.decodeStream(is));
                     mSecondBitmap = BitmapFactory.decodeStream(is);
                 }
                 mTmpGalleryPicturePath = selectedImage.getPath();
@@ -334,7 +381,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
         AlarmManager alarmManager = (AlarmManager) getSystemService(this.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-        Log.e("notiid", NOTIID + "," + binding.textExpiryTime.getText().toString());
+        Log.e("notiid", NOTIID + "," + binding.content.textExpiryTime.getText().toString());
     }
 
     private Notification getNotification(String content) {
@@ -420,16 +467,16 @@ public class MainActivity extends AppCompatActivity implements Constants {
                 showMessage("please select future reminder time");
             } else if (mExpiryDelay <= 0) {
                 showMessage("please select future expiry time");
-            } else if (binding.edittextMediname.getText().length() == 0) {
-                binding.edittextMediname.setError("can't be empty");
+            } else if (binding.content.edittextMediname.getText().length() == 0) {
+                binding.content.edittextMediname.setError("can't be empty");
             } else if (mExpiryDelay < mStartDelay) {
                 showMessage("expiry time should be greater than start time");
             } else {
-                scheduleNotification(createCustomNotification(binding.textStartTime.getText().toString()),5000);
+                scheduleNotification(createCustomNotification(binding.content.textStartTime.getText().toString()), 5000);
                 showMessage("alert set");
-                binding.edittextMediname.setText(null);
-                binding.textStartTime.setText("Start Time");
-                binding.textExpiryTime.setText("Expiry Time");
+                binding.content.edittextMediname.setText(null);
+                binding.content.textStartTime.setText("Start Time");
+                binding.content.textExpiryTime.setText("Expiry Time");
                 resetImages();
             }
 
@@ -438,14 +485,14 @@ public class MainActivity extends AppCompatActivity implements Constants {
         public void setExpiry(View view) {
             if (mExpiryDelay <= 0) {
                 showMessage("please select future time");
-            } else if (binding.edittextMediname.getText().length() == 0) {
-                binding.edittextMediname.setError("can't be empty");
+            } else if (binding.content.edittextMediname.getText().length() == 0) {
+                binding.content.edittextMediname.setError("can't be empty");
             } else {
 
-                scheduleNotification(createCustomNotification(binding.textExpiryTime.getText().toString()), 5000);
+                scheduleNotification(createCustomNotification(binding.content.textExpiryTime.getText().toString()), 5000);
                 showMessage("alert set");
-                binding.edittextMediname.setText(null);
-                binding.textExpiryTime.setText("End Time");
+                binding.content.edittextMediname.setText(null);
+                binding.content.textExpiryTime.setText("End Time");
 
                 resetImages();
             }
@@ -453,9 +500,9 @@ public class MainActivity extends AppCompatActivity implements Constants {
 
         private void resetImages() {
             Bitmap bitmap = ((BitmapDrawable) getResources()
-                    .getDrawable(R.mipmap.ic_add_image)).getBitmap();
-            binding.imageView1.setImageBitmap(bitmap);
-            binding.imageView2.setImageBitmap(bitmap);
+                    .getDrawable(R.mipmap.ic_add_medi_image)).getBitmap();
+            binding.content.imageView1.setImageBitmap(bitmap);
+            binding.content.imageView2.setImageBitmap(bitmap);
 
         }
 

@@ -7,4 +7,6 @@
     <string name="permission_denied">Permission has been denied, you need to give permission to do the operation, press OK to open settings</string>
     <string name="OK">OK</string>
     <string name="no">NO</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
 </resources>

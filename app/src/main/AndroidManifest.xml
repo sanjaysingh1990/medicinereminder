@@ -11,9 +11,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
-
-            ></activity>
+        <activity android:name=".MainActivity" />
         <activity
             android:name=".SplashActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar">
@@ -26,14 +24,13 @@
         <activity
             android:name=".ChooseDateTimePickerActivity"
             android:label="@string/title_activity_choose_date_time_picker"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver android:name=".NotificationPublisher">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".receiver.MyReceiver"
             android:exported="false">
@@ -45,7 +42,10 @@
         <activity
             android:name=".MyAlertDialog"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".HistoryActivity"
+            android:theme="@style/AppTheme2"
+            ></activity>
     </application>
 
 </manifest>

@@ -3,7 +3,7 @@
     <color name="colorPrimary">#FFA75250</color>
     <color name="colorPrimaryDark">#FF1F2025</color>
     <color name="colorAccent">#ff4081</color>
-    <color name="colorRipple">#000000</color>
+     <color name="colorRipple">#000000</color>
     <color name="material_grey">#31323A</color>
     <color name="material_grey_transparent">#c61f2025</color>
     <color name="material_grey_light">#404048</color>

@@ -18,19 +18,19 @@ public class MyReceiver extends BroadcastReceiver {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         int id = intent.getExtras().getInt(Constants.NOTIFICATION_ID);
         int eventType = intent.getExtras().getInt(Constants.NOTIFICATION_FOR);
-        Log.e("Receiver", "called" + id + "," + eventType);
+        Log.e("Receiver", "called" + id + "," + intent.getExtras().getString(Constants.MEDICINE_NAME));
 
         if (eventType == 2) {
             Intent intentHome = new Intent(context, MyAlertDialog.class);
-            intentHome.putExtra(Constants.MEDICINE_NAME, "frzi");
-            //intentHome.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intentHome.putExtra(Constants.MEDICINE_NAME, intent.getStringExtra(Constants.MEDICINE_NAME));
+            intentHome.putExtra(Constants.MEDICINE_EXPIRY_TIME, intent.getStringExtra(Constants.MEDICINE_EXPIRY_TIME));
             intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intentHome.setAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
             context.startActivity(intentHome);
+            Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
+            context.sendBroadcast(it);
         }
         notificationManager.cancel(id);
 
-        Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
-        context.sendBroadcast(it);
+
     }
 }

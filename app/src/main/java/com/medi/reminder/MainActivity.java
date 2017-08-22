@@ -11,9 +11,9 @@ import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,19 +26,16 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.medi.reminder.databinding.ActivityMainBinding;
+import com.medi.reminder.receiver.MyReceiver;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements Constants {
     private ActivityMainBinding binding;
@@ -49,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private Bitmap mSecondBitmap;
     private long mStartDelay = 0;
     private long mExpiryDelay = 0;
+    private int NOTIID;
 
 
     public Bitmap setBitmap(Bitmap bitmap) {
@@ -70,13 +68,13 @@ public class MainActivity extends AppCompatActivity implements Constants {
 
         if (bitmap == null) {
             bitmap = ((BitmapDrawable) getResources()
-                    .getDrawable(R.mipmap.images)).getBitmap();
+                    .getDrawable(R.mipmap.ic_timer_icon)).getBitmap();
         }
 
 
         Bitmap mutableBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
 
-//        Rect rectangle = new Rect(0, 0, 400, 400);
+//        Rect rectangle = new Rect(0, 0, 200, 200);
 //        Canvas canvas = new Canvas(mutableBitmap);
 //        canvas.drawBitmap(mutableBitmap, null, rectangle, null);
         return mutableBitmap;
@@ -98,26 +96,47 @@ public class MainActivity extends AppCompatActivity implements Constants {
     public Notification createCustomNotification(String text) {
 
 
+        int min = 1;
+        int max = 99999;
+
+        Random r = new Random();
+        NOTIID = r.nextInt(max - min + 1) + min;
         //Create Intent to launch this Activity on notification click
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent();
 
         // Send data to NotificationView Class
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, intent,
+        PendingIntent pIntent = PendingIntent.getActivity(this, NOTIID, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         // Inflate the notification layout as RemoteViews
         RemoteViews contentView = new RemoteViews(this.getPackageName(), R.layout.custom_notification);
-        String notiText = binding.edittextMediname.getText() + "  " + text;
-        int color = Color.BLACK;
+
         // Set text on a TextView in the RemoteViews programmatically.
+        String notificationText = "Expiry At: " + binding.textExpiryTime.getText();
         contentView.setTextColor(R.id.tvNotificationTitle, ContextCompat.getColor(this, android.R.color.black));
-        contentView.setTextViewText(R.id.tvNotificationTitle, notiText);
+        contentView.setTextViewText(R.id.tvNotificationTitle, notificationText);
         contentView.setImageViewBitmap(R.id.tvNotificationMessage, setBitmap(mFirstBitmap));
         contentView.setImageViewBitmap(R.id.tvNotificationMessage2, setBitmap(mSecondBitmap));
 
+        Intent closeButton = new Intent(this, MyReceiver.class);
+        closeButton.putExtra(Constants.NOTIFICATION_ID, NOTIID);
+        // closeButton.putExtra(Constants.NOTIFICATION_FOR,1);
+        closeButton.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(this, NOTIID, closeButton, 0);
+        contentView.setOnClickPendingIntent(R.id.btn_close, pendingSwitchIntent);
 
-        Bitmap largeIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.images);
-        Uri uri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Intent viewDetailsButton = new Intent(this, MyReceiver.class);
+        viewDetailsButton.putExtra(Constants.NOTIFICATION_ID, NOTIID);
+        viewDetailsButton.putExtra(Constants.NOTIFICATION_FOR, 2);
+        viewDetailsButton.putExtra(Constants.MEDICINE_EXPIRY_TIME, binding.textExpiryTime.getText().toString());
+        viewDetailsButton.putExtra(Constants.MEDICINE_NAME, binding.edittextMediname.getText().toString());
+
+        viewDetailsButton.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingViewDetails = PendingIntent.getBroadcast(this, NOTIID, viewDetailsButton, PendingIntent.FLAG_ONE_SHOT);
+        contentView.setOnClickPendingIntent(R.id.btn_view_details, pendingViewDetails);
+
+
+        Bitmap largeIconBitmap = BitmapFactory.decodeResource(this.getResources(), R.mipmap.ic_timer_icon);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 // Set Icon
@@ -125,16 +144,16 @@ public class MainActivity extends AppCompatActivity implements Constants {
                 // Sets the ticker text
                 .setTicker(getResources().getString(R.string.app_name))
                 // Sets the small icon for the ticker
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.ic_timer_icon)
 
                 // Dismiss Notification
-                .setAutoCancel(true)
+                // .setAutoCancel(true)
                 // Set PendingIntent into Notification
                 .setContentIntent(pIntent)
                 // Set RemoteViews into Notification
-                .setContent(contentView).setSound(uri)
+                .setContent(contentView)
                 .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Android Notification"));
+                        .bigText(notificationText));
 
 
         //Build the notification
@@ -147,20 +166,21 @@ public class MainActivity extends AppCompatActivity implements Constants {
 //
 //        notificationmanager.notify(notificationId, notification);
         return notification;
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null && requestCode == CHOOSESTARTDATETIME) {
-            Log.e("date", data.getExtras().getString(DATETIME));
-            Log.e("delaytime", data.getExtras().getLong(DELAYTIME) + "");
+            // Log.e("date", data.getExtras().getString(DATETIME));
+            // Log.e("delaytime", data.getExtras().getLong(DELAYTIME) + "");
             mStartDelay = data.getExtras().getLong(DELAYTIME);
 
             binding.textStartTime.setText(data.getExtras().getString(DATETIME));
 
         } else if (data != null && requestCode == CHOOSEEXPIRYDATETIME) {
-            Log.e("date", data.getExtras().getString(DATETIME));
+            // Log.e("date", data.getExtras().getString(DATETIME));
             mExpiryDelay = data.getExtras().getLong(DELAYTIME);
             binding.textExpiryTime.setText(data.getExtras().getString(DATETIME));
         } else if (resultCode == Activity.RESULT_OK) {
@@ -303,14 +323,15 @@ public class MainActivity extends AppCompatActivity implements Constants {
 //    }
 
     private void scheduleNotification(Notification notification, long delay) {
-        int notiId = (int) System.currentTimeMillis();
         Intent notificationIntent = new Intent(this, NotificationPublisher.class);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, notiId);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, NOTIID);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, NOTIID, notificationIntent, 0);
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
         AlarmManager alarmManager = (AlarmManager) getSystemService(this.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+        Log.e("notiid", NOTIID + "," + binding.textExpiryTime.getText().toString());
     }
 
     private Notification getNotification(String content) {
@@ -369,6 +390,11 @@ public class MainActivity extends AppCompatActivity implements Constants {
 
     }
 
+    private void showMessage(String message) {
+        Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+
+    }
+
     public class ClickHandler {
 
         public void setStartTime(View view) {
@@ -388,14 +414,19 @@ public class MainActivity extends AppCompatActivity implements Constants {
 
         public void setReminder(View view) {
             if (mStartDelay <= 0) {
-                showMessage("please select future time");
+                showMessage("please select future reminder time");
+            } else if (mExpiryDelay <= 0) {
+                showMessage("please select future expiry time");
             } else if (binding.edittextMediname.getText().length() == 0) {
                 binding.edittextMediname.setError("can't be empty");
+            } else if (mExpiryDelay < mStartDelay) {
+                showMessage("expiry time should be greater than start time");
             } else {
-                scheduleNotification(createCustomNotification(binding.textStartTime.getText().toString()), 5000);
+                scheduleNotification(createCustomNotification(binding.textStartTime.getText().toString()),5000);
                 showMessage("alert set");
                 binding.edittextMediname.setText(null);
                 binding.textStartTime.setText("Start Time");
+                binding.textExpiryTime.setText("Expiry Time");
                 resetImages();
             }
 
@@ -412,6 +443,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
                 showMessage("alert set");
                 binding.edittextMediname.setText(null);
                 binding.textExpiryTime.setText("End Time");
+
                 resetImages();
             }
         }
@@ -435,11 +467,6 @@ public class MainActivity extends AppCompatActivity implements Constants {
             mSecondImage = true;
             getProfileImage();
         }
-    }
-
-    private void showMessage(String message) {
-        Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
-
     }
 
 

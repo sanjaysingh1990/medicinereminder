@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
         PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(this, NOTIID, closeButton, 0);
         contentView.setOnClickPendingIntent(R.id.btn_close, pendingSwitchIntent);
 
+
         Intent viewDetailsButton = new Intent(this, MyReceiver.class);
         viewDetailsButton.putExtra(Constants.NOTIFICATION_ID, NOTIID);
         viewDetailsButton.putExtra(Constants.NOTIFICATION_FOR, 2);
@@ -152,14 +153,16 @@ public class MainActivity extends AppCompatActivity implements Constants {
                 .setContentIntent(pIntent)
                 // Set RemoteViews into Notification
                 .setContent(contentView)
+                .setCustomBigContentView(contentView)
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(notificationText));
 
 
         //Build the notification
         Notification notification = builder.build();
-
-        // Use the NotificationManager to show the notification
+//        notification.contentView = contentView;
+//        notification.bigContentView = contentView;
+//        // Use the NotificationManager to show the notification
 //        NotificationManager notificationmanager = (NotificationManager) this.getSystemService(this.NOTIFICATION_SERVICE);
 //
 //        int notificationId = new Random().nextInt(100);

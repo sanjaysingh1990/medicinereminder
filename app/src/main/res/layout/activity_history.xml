@@ -8,7 +8,7 @@
 
         <variable
             name="clickEvent"
-            type="com.medi.reminder.HistoryActivity.ClickHandler" />
+            type="com.medi.reminder.history.HistoryActivity.ClickHandler" />
 
 
     </data>

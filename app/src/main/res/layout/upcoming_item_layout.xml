@@ -39,31 +39,35 @@
         app:layout_constraintTop_toBottomOf="@+id/text_medi_name" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/image_medi1"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="16dp"
+
+        android:clickable="true"
         android:scaleType="centerCrop"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/text_expiry_time"
         app:srcCompat="@mipmap/images" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/image_medi2"
         android:layout_width="wrap_content"
         android:layout_height="100dp"
         android:layout_marginBottom="0dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
+        android:clickable="true"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintBottom_toBottomOf="@+id/image_medi1"
         app:layout_constraintLeft_toLeftOf="@+id/guideline2"
         app:layout_constraintRight_toLeftOf="@+id/guideline3"
-        app:layout_constraintTop_toTopOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="@+id/image_medi1"
         app:layout_constraintVertical_bias="0.0"
         app:srcCompat="@mipmap/images" />
 
@@ -78,10 +82,10 @@
         android:background="@drawable/ripple_yellow"
         android:text="Cancel Reminder"
         android:textColor="@android:color/background_light"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintBottom_toBottomOf="@+id/image_medi2"
         app:layout_constraintLeft_toLeftOf="@+id/guideline3"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView3"
+        app:layout_constraintTop_toTopOf="@+id/image_medi2"
         app:layout_constraintVertical_bias="0.512" />
 
     <android.support.constraint.Guideline
@@ -106,7 +110,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintTop_toBottomOf="@+id/image_medi2" />
 
 
 </android.support.constraint.ConstraintLayout>

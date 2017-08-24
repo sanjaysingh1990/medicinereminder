@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.medi.reminder.databinding.ActivityMainBinding;
+import com.medi.reminder.history.HistoryActivity;
 import com.medi.reminder.receiver.MyReceiver;
 
 import java.io.FileNotFoundException;

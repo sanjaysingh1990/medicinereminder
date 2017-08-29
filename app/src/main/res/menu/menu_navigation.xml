@@ -3,8 +3,8 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/home"
-            android:icon="@drawable/ic_navi_home_icon"
-            android:title="Home" />
+            android:icon="@drawable/ic_noti_alert_icon"
+            android:title="Alert to care taker" />
         <item
             android:id="@+id/history"
             android:icon="@drawable/ic_navi_history_icon"

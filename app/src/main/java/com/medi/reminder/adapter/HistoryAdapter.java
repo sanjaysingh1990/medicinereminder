@@ -72,8 +72,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.Medicine
         else
             viewHolder.mMediImage2.setImageResource(R.mipmap.images);
 
-//        Log.e("imageurl1", medicine.getMedicineImageUrl1() + ".jpg");
-//        Log.e("imageurl2", medicine.getMedicineImageUrl1() + ".jpg");
 
     }
 

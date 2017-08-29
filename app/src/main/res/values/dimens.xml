@@ -13,6 +13,7 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="corner_radius">5dp</dimen>
     <dimen name="marker_offset_x">5dp</dimen>
+    <dimen name="font_size">12sp</dimen>
     <dimen name="marker_offset_y">65dp</dimen>
     <!--this size is for logo and user profile picture, they must be of same size through out the app-->
     <dimen name="image_size">80dp</dimen>

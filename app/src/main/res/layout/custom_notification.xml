@@ -14,8 +14,7 @@
         android:layout_centerVertical="true"
         android:layout_margin="5dp"
         android:src="@mipmap/ic_launcher"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -43,26 +42,30 @@
                 android:id="@+id/tvNotificationMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:src="@mipmap/ic_launcher"
-                />
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher" />
 
             <ImageView
                 android:id="@+id/tvNotificationMessage2"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:src="@mipmap/ic_launcher"
-                />
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher" />
 
             <Button
                 android:id="@+id/btn_view_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="View Details" />
 
             <Button
                 android:id="@+id/btn_close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Close" />
         </LinearLayout>
     </LinearLayout>

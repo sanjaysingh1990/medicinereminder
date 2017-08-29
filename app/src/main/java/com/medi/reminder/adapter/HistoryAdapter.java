@@ -7,10 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.medi.reminder.Constants;
 import com.medi.reminder.R;
 import com.medi.reminder.history.ActionCallBack;
-import com.medi.reminder.model.history.Data;
+import com.medi.reminder.realm.model.Medicine;
+import com.medi.reminder.utils.Utils;
 
 import java.util.List;
 
@@ -21,102 +24,82 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  * *
  */
 
-public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.DataHolder> {
+public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MedicineHolder> {
     private static final String FORMAT = "EEE, dd MMM, yyyy hh:mm a";
     private FragmentActivity mActivity;
-    private List<Data> mDataList;
+    private List<Medicine> mMedicineList;
     private int mType = 1; // 1-for upcoming 2- for past
     private ActionCallBack mCallback;
+    private int ALERT_TYPE;
 
-    public HistoryAdapter(FragmentActivity activity, List<Data> dataList, ActionCallBack actionCallBack) {
+    public HistoryAdapter(FragmentActivity activity, List<Medicine> MedicineList, int alertType, ActionCallBack actionCallBack) {
         mActivity = activity;
-        mDataList = dataList;
+        mMedicineList = MedicineList;
         mCallback = actionCallBack;
+        this.ALERT_TYPE = alertType;
 
     }
 
     @Override
-    public DataHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MedicineHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
 
         View view = LayoutInflater.from(mActivity).inflate(R.layout.item_medicine_list, parent, false);
-        return new DataHolder(view);
+        return new MedicineHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(DataHolder viewHolder, int position) {
+    public void onBindViewHolder(MedicineHolder viewHolder, int position) {
+        Medicine medicine = mMedicineList.get(position);
+        viewHolder.mTxtMediName.setText(medicine.getMedicineName());
+        viewHolder.mTxtExpiryTime.setText(medicine.getExpiryMedicineTime());
+        if (ALERT_TYPE == Constants.UPCOMING_ALERT) {
+            viewHolder.mBtnCancelReminder.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.mBtnCancelReminder.setVisibility(View.INVISIBLE);
 
+        }
+        String imageurl1 = medicine.getMedicineImageUrl1();
+        String imageurl2 = medicine.getMedicineImageUrl2();
+        //load first medi image
+        if (imageurl1.length() > 0)
+            Utils.getInstance().downloadImage(mActivity, imageurl1, viewHolder.mMediImage1);
+        else
+            viewHolder.mMediImage1.setImageResource(R.mipmap.images);
+        //load second medi image
+        if (imageurl2.length() > 0)
+            Utils.getInstance().downloadImage(mActivity, imageurl2, viewHolder.mMediImage2);
+        else
+            viewHolder.mMediImage2.setImageResource(R.mipmap.images);
+
+//        Log.e("imageurl1", medicine.getMedicineImageUrl1() + ".jpg");
+//        Log.e("imageurl2", medicine.getMedicineImageUrl1() + ".jpg");
 
     }
 
 
     @Override
     public int getItemCount() {
-        return mDataList.size();
+        return mMedicineList.size();
     }
 
 
-    class DataHolder extends RecyclerView.ViewHolder {
-        //        private TextView mTxtUname;
-//        private TextView mTxtOrderId;
-//        private TextView mTxtServices;
-//        private TextView mTxtTotalTime;
-//        private TextView mTxtTime;
-//        private TextView mTxtTotalPrice;
-//        private CircleImageView mImgProfilePic;
-//        private ConstraintLayout mConstraintLayout;
-//        private ImageView ImgBtnCancelRequest;
-//        private ImageView ImgBtnAcceptRequest;
+    class MedicineHolder extends RecyclerView.ViewHolder {
+        private TextView mTxtMediName;
+        private TextView mTxtExpiryTime;
         private Button mBtnCancelReminder;
         private ImageView mMediImage1;
         private ImageView mMediImage2;
 
 
-        DataHolder(View itemView) {
+        MedicineHolder(View itemView) {
             super(itemView);
             mBtnCancelReminder = (Button) itemView.findViewById(R.id.btn_set_reminder);
             mMediImage1 = (ImageView) itemView.findViewById(R.id.image_medi1);
             mMediImage2 = (ImageView) itemView.findViewById(R.id.image_medi2);
+            mTxtMediName = (TextView) itemView.findViewById(R.id.text_medi_name);
+            mTxtExpiryTime = (TextView) itemView.findViewById(R.id.text_expiry_time);
 
-//            mImgProfilePic = (CircleImageView) itemView.findViewById(R.id.image_profile_pic);
-//            mTxtUname = (TextView) itemView.findViewById(R.id.text_user_name);
-//            mTxtOrderId = (TextView) itemView.findViewById(R.id.text_orderid);
-//            mTxtServices = (TextView) itemView.findViewById(R.id.text_services);
-//            mTxtTotalTime = (TextView) itemView.findViewById(R.id.text_total_time);
-//            mTxtTime = (TextView) itemView.findViewById(R.id.text_timing);
-//            mTxtTotalPrice = (TextView) itemView.findViewById(R.id.text_total_price);
-//
-//            mConstraintLayout = (ConstraintLayout) itemView.findViewById(R.id.constraintLayout);
-//            mConstraintLayout.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if (bookingSelectedCallBack != null) {
-//                        bookingSelectedCallBack.bookingSelected(getAdapterPosition());
-//                    }
-//                }
-//            });
-//
-//            ImgBtnAcceptRequest = (ImageView) itemView.findViewById(R.id.button_accept_request);
-//            ImgBtnCancelRequest = (ImageView) itemView.findViewById(R.id.button_cancel_request);
-//
-//            //bind with events
-//            ImgBtnAcceptRequest.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if (mCallback != null) {
-//                        mCallback.accept(getAdapterPosition());
-//                    }
-//                }
-//            });
-//
-//            ImgBtnCancelRequest.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    if (mCallback != null) {
-//                        mCallback.reject(getAdapterPosition());
-//                    }
-//                }
-//            });
 
             mBtnCancelReminder.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -143,8 +126,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.DataHold
 
         }
 
-        private void showAlert(int postion)
-        {
+        private void showAlert(int postion) {
             new SweetAlertDialog(mActivity, SweetAlertDialog.CUSTOM_IMAGE_TYPE)
                     .setTitleText("Sweet!")
                     .setContentText("Here's a custom image.")

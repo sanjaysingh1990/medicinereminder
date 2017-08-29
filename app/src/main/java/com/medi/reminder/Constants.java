@@ -19,6 +19,9 @@ public interface Constants {
     public static final String NOTIFICATION_FOR = "notification_from";
     public static final String MEDICINE_NAME = "medicine_name";
     public static final String MEDICINE_EXPIRY_TIME = "medicine_expiry_time";
+    public static final int UPCOMING_ALERT=1;
+    public static final int HISTORY_ALERT=0;
+
 
 
 }

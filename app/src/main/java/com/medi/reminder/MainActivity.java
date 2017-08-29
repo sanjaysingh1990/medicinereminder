@@ -25,7 +25,6 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -34,13 +33,19 @@ import android.widget.Toast;
 
 import com.medi.reminder.databinding.ActivityMainBinding;
 import com.medi.reminder.history.HistoryActivity;
+import com.medi.reminder.realm.IMedicineContract;
+import com.medi.reminder.realm.model.Medicine;
+import com.medi.reminder.realm.presenters.impl.MedicinePresenter;
 import com.medi.reminder.receiver.MyReceiver;
+import com.medi.reminder.receiver.NotificationPublisher;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements Constants {
+import io.realm.RealmResults;
+
+public class MainActivity extends AppCompatActivity implements Constants, IMedicineContract {
     private ActivityMainBinding binding;
     private String mTmpGalleryPicturePath;
     private boolean mFirstImage;
@@ -50,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements Constants {
     private long mStartDelay = 0;
     private long mExpiryDelay = 0;
     private int NOTIID;
+    private String mImageUrl1;
+    private String mImageUrl2;
+
 
     public Bitmap setBitmap(Bitmap bitmap) {
 //        String fontName = "digital-7";
@@ -238,15 +246,17 @@ public class MainActivity extends AppCompatActivity implements Constants {
             switch (requestCode) {
                 case REQUEST_CAMERA:
                     mTmpGalleryPicturePath = getOriginalImagePath();
+
                     Bitmap bitmap = getBitmap(mTmpGalleryPicturePath);
                     if (mFirstImage) {
-
+                        mImageUrl1 = mTmpGalleryPicturePath;
                         if (bitmap != null) {
                             binding.content.imageView1.setImageBitmap(bitmap);
                             mFirstBitmap = bitmap;
 
                         }
                     } else {
+                        mImageUrl2 = mTmpGalleryPicturePath;
                         if (bitmap != null) {
                             binding.content.imageView2.setImageBitmap(bitmap);
                             mSecondBitmap = bitmap;
@@ -286,13 +296,14 @@ public class MainActivity extends AppCompatActivity implements Constants {
         if (mTmpGalleryPicturePath != null) {
             Bitmap bitmap = getBitmap(mTmpGalleryPicturePath);
             if (mFirstImage) {
-
+                mImageUrl1 = mTmpGalleryPicturePath;
                 if (bitmap != null) {
                     binding.content.imageView1.setImageBitmap(bitmap);
                     mFirstBitmap = bitmap;
 
                 }
             } else {
+                mImageUrl2 = mTmpGalleryPicturePath;
                 if (bitmap != null) {
                     binding.content.imageView2.setImageBitmap(bitmap);
                     mSecondBitmap = bitmap;
@@ -302,9 +313,11 @@ public class MainActivity extends AppCompatActivity implements Constants {
             try {
                 InputStream is = getContentResolver().openInputStream(selectedImage);
                 if (mFirstImage) {
+                    mImageUrl1 = selectedImage.getPath();
                     binding.content.imageView1.setImageBitmap(BitmapFactory.decodeStream(is));
                     mFirstBitmap = BitmapFactory.decodeStream(is);
                 } else {
+                    mImageUrl2 = selectedImage.getPath();
                     binding.content.imageView2.setImageBitmap(BitmapFactory.decodeStream(is));
                     mSecondBitmap = BitmapFactory.decodeStream(is);
                 }
@@ -382,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements Constants {
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
         AlarmManager alarmManager = (AlarmManager) getSystemService(this.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
-        Log.e("notiid", NOTIID + "," + binding.content.textExpiryTime.getText().toString());
+
     }
 
     private Notification getNotification(String content) {
@@ -441,7 +454,13 @@ public class MainActivity extends AppCompatActivity implements Constants {
 
     }
 
-    private void showMessage(String message) {
+    @Override
+    public void showStudents(RealmResults<Medicine> medicines) {
+        //nothing to do
+    }
+
+    @Override
+    public void showMessage(String message) {
         Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
 
     }
@@ -473,8 +492,30 @@ public class MainActivity extends AppCompatActivity implements Constants {
             } else if (mExpiryDelay < mStartDelay) {
                 showMessage("expiry time should be greater than start time");
             } else {
-                scheduleNotification(createCustomNotification(binding.content.textStartTime.getText().toString()), 5000);
+                scheduleNotification(createCustomNotification(binding.content.textStartTime.getText().toString()), 20000);
                 showMessage("alert set");
+                Medicine medicine = new Medicine();
+                String medicineName = binding.content.edittextMediname.getText().toString();
+                medicine.setMedicineName(medicineName);
+                String startTime = binding.content.textStartTime.getText().toString();
+                String expiryTime = binding.content.textExpiryTime.getText().toString();
+                medicine.setTakeMedicineTime(startTime);
+                medicine.setExpiryMedicineTime(expiryTime);
+                medicine.setNotificationId(NOTIID);
+                //for first image url
+                if (mImageUrl1 == null)
+                    medicine.setMedicineImageUrl1("");
+                else
+                    medicine.setMedicineImageUrl1(mImageUrl1);
+
+                //for second image url
+                if (mImageUrl2 == null)
+                    medicine.setMedicineImageUrl2("");
+                else
+                    medicine.setMedicineImageUrl2(mImageUrl2);
+
+                MedicinePresenter presenter = new MedicinePresenter(MainActivity.this);
+                presenter.addStudent(medicine);
                 binding.content.edittextMediname.setText(null);
                 binding.content.textStartTime.setText("Start Time");
                 binding.content.textExpiryTime.setText("Expiry Time");

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     >
@@ -36,17 +37,17 @@
             android:id="@+id/tabLayout"
             android:layout_width="0dp"
             android:layout_height="45dp"
-            android:layout_marginTop="16dp"
             android:background="@color/white"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edit_search_box"
             app:tabIndicatorColor="@color/yellow"
             app:tabIndicatorHeight="3dp"
 
             app:tabSelectedTextColor="@color/yellow"
-            app:tabTextColor="@color/yellow_blur">
+            app:tabTextColor="@color/yellow_blur"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginTop="0dp">
 
             <android.support.design.widget.TabItem
                 android:layout_width="wrap_content"
@@ -79,6 +80,7 @@
             android:maxLines="1"
             android:padding="6dp"
             android:textColorHint="@color/gray"
+            android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@+id/image_reset" />
 
@@ -93,6 +95,7 @@
             android:onClick="@{clickEvent::calendar}"
             android:padding="5dp"
             android:src="@drawable/ic_calendar_icon"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/edit_search_box"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/edit_search_box"
@@ -105,6 +108,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="0dp"
             android:background="@color/material_grey_light"
+            android:visibility="gone"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -144,11 +148,15 @@
             android:layout_marginBottom="0dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="0dp"
+            android:visibility="gone"
             android:onClick="@{clickEvent.resetFilter}"
             android:src="@drawable/ic_reset_filter"
             app:layout_constraintBottom_toBottomOf="@+id/imageView8"
             app:layout_constraintRight_toLeftOf="@+id/imageView8"
-            app:layout_constraintTop_toTopOf="@+id/imageView8" />
+            app:layout_constraintTop_toTopOf="@+id/imageView8"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintVertical_bias="0.483"
+            app:layout_constraintLeft_toLeftOf="@+id/imageView8" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>

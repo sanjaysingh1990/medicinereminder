@@ -26,12 +26,14 @@ public class HistoryActivity extends AppCompatActivity {
 
    private void init()
     {
+        setTitle("History");
         mAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         mAdapter.addFrag(new UpcomingFragment(), "UPCOMING");
         mAdapter.addFrag(new PastFragment(), "PAST");
-
         binding.viewpager.setAdapter(mAdapter);
         binding.tabLayout.setupWithViewPager(binding.viewpager);
+
+
 
     }
 

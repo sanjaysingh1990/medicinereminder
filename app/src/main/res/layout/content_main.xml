@@ -7,14 +7,14 @@
 
         <variable
             name="clickEvent"
-            type="com.medi.reminder.MainActivity.ClickHandler" />
+            type="com.medi.reminder.activity.MainActivity.ClickHandler" />
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        tools:context="com.medi.reminder.MainActivity">
+        tools:context="com.medi.reminder.activity.MainActivity">
 
 
         <TextView

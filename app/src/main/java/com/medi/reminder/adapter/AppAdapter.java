@@ -24,7 +24,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  * *
  */
 
-public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MedicineHolder> {
+public class AppAdapter extends RecyclerView.Adapter<AppAdapter.MedicineHolder> {
     private static final String FORMAT = "EEE, dd MMM, yyyy hh:mm a";
     private FragmentActivity mActivity;
     private List<Medicine> mMedicineList;
@@ -32,7 +32,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.Medicine
     private ActionCallBack mCallback;
     private int ALERT_TYPE;
 
-    public HistoryAdapter(FragmentActivity activity, List<Medicine> MedicineList, int alertType, ActionCallBack actionCallBack) {
+    public AppAdapter(FragmentActivity activity, List<Medicine> MedicineList, int alertType, ActionCallBack actionCallBack) {
         mActivity = activity;
         mMedicineList = MedicineList;
         mCallback = actionCallBack;
@@ -111,14 +111,14 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.Medicine
             mMediImage1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showAlert(getAdapterPosition());
+                    //showAlert(getAdapterPosition());
                 }
             });
 
             mMediImage2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    showAlert(getAdapterPosition());
+                    //showAlert(getAdapterPosition());
                 }
             });
 

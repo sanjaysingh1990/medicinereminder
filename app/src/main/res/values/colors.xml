@@ -20,7 +20,7 @@
     <color name="address_button_color">#6A6B70</color>
     <color name="address_button_color_dark">#444448</color>
     <color name="white">#ffffff</color>
-    <color name="black">#96000000</color>
+    <color name="black">#000000</color>
     <color name="black_perfect">#000000</color>
     <color name="dashboard_count_color">#33FFFC</color>
 

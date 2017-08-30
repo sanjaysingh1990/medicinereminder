@@ -1,4 +1,4 @@
-package com.medi.reminder;
+package com.medi.reminder.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -23,14 +23,22 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.medi.reminder.ChooseDateTimePickerActivity;
+import com.medi.reminder.CompressImage;
+import com.medi.reminder.Constants;
+import com.medi.reminder.ImagePickerDialog;
+import com.medi.reminder.PermissionDenied;
+import com.medi.reminder.R;
 import com.medi.reminder.databinding.ActivityMainBinding;
 import com.medi.reminder.history.HistoryActivity;
 import com.medi.reminder.realm.IMedicineContract;
@@ -95,14 +103,14 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setClickEvent(new ClickHandler());
-        setSupportActionBar(binding.toolbar);
+        //  setSupportActionBar(binding.toolbar);
         initNavigationDrawer();
 
     }
 
 
     public void initNavigationDrawer() {
-
+        binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         binding.navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -111,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
 
                 switch (id) {
                     case R.id.home:
-                        Toast.makeText(getApplicationContext(), "Home", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(MainActivity.this, AddAlertContactsActivity.class));
                         binding.drawer.closeDrawers();
                         break;
                     case R.id.settings:
@@ -132,20 +140,20 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
         TextView tv_email = (TextView) header.findViewById(R.id.tv_email);
         tv_email.setText("raj.amalw@learn2crack.com");
 
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.drawer, binding.toolbar, R.string.drawer_open, R.string.drawer_close) {
-
-            @Override
-            public void onDrawerClosed(View v) {
-                super.onDrawerClosed(v);
-            }
-
-            @Override
-            public void onDrawerOpened(View v) {
-                super.onDrawerOpened(v);
-            }
-        };
-        binding.drawer.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
+//        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.drawer, binding.toolbar, R.string.drawer_open, R.string.drawer_close) {
+//
+//            @Override
+//            public void onDrawerClosed(View v) {
+//                super.onDrawerClosed(v);
+//            }
+//
+//            @Override
+//            public void onDrawerOpened(View v) {
+//                super.onDrawerOpened(v);
+//            }
+//        };
+//        binding.drawer.addDrawerListener(actionBarDrawerToggle);
+//        actionBarDrawerToggle.syncState();
     }
 
 
@@ -181,12 +189,25 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
         PendingIntent pendingSwitchIntent = PendingIntent.getBroadcast(this, NOTIID, closeButton, 0);
         contentView.setOnClickPendingIntent(R.id.btn_close, pendingSwitchIntent);
 
+        /**
+         ******************* TO SHOW MEDICINE DETAILS ************
+         */
 
         Intent viewDetailsButton = new Intent(this, MyReceiver.class);
         viewDetailsButton.putExtra(Constants.NOTIFICATION_ID, NOTIID);
         viewDetailsButton.putExtra(Constants.NOTIFICATION_FOR, 2);
         viewDetailsButton.putExtra(Constants.MEDICINE_EXPIRY_TIME, binding.content.textExpiryTime.getText().toString());
+        viewDetailsButton.putExtra(Constants.MEDICINE_START_TIME, binding.content.textStartTime.getText().toString());
         viewDetailsButton.putExtra(Constants.MEDICINE_NAME, binding.content.edittextMediname.getText().toString());
+
+        if (mImageUrl1 == null)
+            mImageUrl1 = "";
+        if (mImageUrl2 == null)
+            mImageUrl2 = "";
+
+        viewDetailsButton.putExtra(Constants.IMAGE_URL1, mImageUrl1);
+        viewDetailsButton.putExtra(Constants.IMAGE_URL2, mImageUrl2);
+
 
         viewDetailsButton.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent pendingViewDetails = PendingIntent.getBroadcast(this, NOTIID, viewDetailsButton, PendingIntent.FLAG_ONE_SHOT);
@@ -465,6 +486,25 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
 
     }
 
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_history:
+                startActivity(new Intent(MainActivity.this, HistoryActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.home_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
     public class ClickHandler {
 
         public void setStartTime(View view) {
@@ -492,7 +532,7 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
             } else if (mExpiryDelay < mStartDelay) {
                 showMessage("expiry time should be greater than start time");
             } else {
-                scheduleNotification(createCustomNotification(binding.content.textStartTime.getText().toString()), 20000);
+                scheduleNotification(createCustomNotification(binding.content.textStartTime.getText().toString()), 5000);
                 showMessage("alert set");
                 Medicine medicine = new Medicine();
                 String medicineName = binding.content.edittextMediname.getText().toString();
@@ -560,6 +600,5 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
             getProfileImage();
         }
     }
-
 
 }

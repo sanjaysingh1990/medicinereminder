@@ -7,7 +7,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.medi.reminder.Constants;
-import com.medi.reminder.MyAlertDialog;
+import com.medi.reminder.activity.DetailsActivity;
 
 public class MyReceiver extends BroadcastReceiver {
 
@@ -21,11 +21,11 @@ public class MyReceiver extends BroadcastReceiver {
         Log.e("Receiver", "called" + id + "," + intent.getExtras().getString(Constants.MEDICINE_NAME));
 
         if (eventType == 2) {
-            Intent intentHome = new Intent(context, MyAlertDialog.class);
-            intentHome.putExtra(Constants.MEDICINE_NAME, intent.getStringExtra(Constants.MEDICINE_NAME));
-            intentHome.putExtra(Constants.MEDICINE_EXPIRY_TIME, intent.getStringExtra(Constants.MEDICINE_EXPIRY_TIME));
+            Intent intentHome = new Intent(context, DetailsActivity.class);
+            intentHome.putExtra(Constants.DATA, intent.getExtras());
             intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intentHome);
+            //to close notification panel
             Intent it = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
             context.sendBroadcast(it);
         }

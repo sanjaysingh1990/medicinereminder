@@ -1,9 +1,11 @@
-package com.medi.reminder;
+package com.medi.reminder.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+
+import com.medi.reminder.R;
 
 
 public class SplashActivity extends AppCompatActivity {

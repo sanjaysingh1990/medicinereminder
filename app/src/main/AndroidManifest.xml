@@ -16,9 +16,13 @@
         tools:replace="icon, label"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.MainActivity"
+            android:screenOrientation="portrait"
+
+            />
         <activity
             android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +32,7 @@
         </activity>
         <activity
             android:name=".ChooseDateTimePickerActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_choose_date_time_picker"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -47,11 +52,16 @@
         <activity
             android:name=".activity.DetailsActivity"
             android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme2" />
         <activity
             android:name=".history.HistoryActivity"
+            android:screenOrientation="portrait"
+
             android:theme="@style/AppTheme2" />
         <activity android:name=".activity.AddAlertContactsActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme2"
             >
 

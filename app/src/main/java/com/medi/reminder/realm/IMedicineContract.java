@@ -1,5 +1,6 @@
 package com.medi.reminder.realm;
 
+import com.medi.reminder.realm.model.ContactData;
 import com.medi.reminder.realm.model.Medicine;
 
 import io.realm.RealmResults;
@@ -10,5 +11,6 @@ import io.realm.RealmResults;
 
 public interface IMedicineContract {
     void showStudents(RealmResults<Medicine> medicines);
+    void showContacts(RealmResults<ContactData> contactsList);
     void showMessage(String message);
 }

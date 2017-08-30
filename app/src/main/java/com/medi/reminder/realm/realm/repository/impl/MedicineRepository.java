@@ -1,8 +1,7 @@
 package com.medi.reminder.realm.realm.repository.impl;
 
-import android.util.Log;
-
 import com.medi.reminder.app.MedicineAlertApp;
+import com.medi.reminder.realm.model.ContactData;
 import com.medi.reminder.realm.model.Medicine;
 import com.medi.reminder.realm.realm.repository.IMedicineRepository;
 import com.medi.reminder.realm.realm.table.RealmTable;
@@ -39,6 +38,32 @@ public class MedicineRepository implements IMedicineRepository {
             callback.onSuccess();
     }
 
+    @Override
+    public void addContact(ContactData contactData, OnSaveContactCallback callback) {
+        Realm realm = Realm.getInstance(MedicineAlertApp.getInstance());
+        realm.beginTransaction();
+        ContactData data = realm.createObject(ContactData.class);
+        data.setId(UUID.randomUUID().toString());
+        data.setContactName(contactData.getContactName());
+        data.setPhoneNo(contactData.getPhoneNo());
+        data.setSms(contactData.isSms());
+        data.setPhone(contactData.isPhone());
+
+
+        realm.commitTransaction();
+
+        if (callback != null)
+            callback.onSuccess();
+
+    }
+
+    @Override
+    public void getAllContacts(OnGetAllContactsCallback callback) {
+        Realm realm = Realm.getInstance(MedicineAlertApp.getInstance());
+        RealmResults<ContactData> results = realm.where(ContactData.class).findAll();
+        if (callback != null)
+            callback.onSuccess(results);
+    }
 
 
     @Override
@@ -67,17 +92,14 @@ public class MedicineRepository implements IMedicineRepository {
     }
 
     @Override
-    public void getAllStudents(int historytype,OnGetAllStudentsCallback callback) {
+    public void getAllStudents(int historytype, OnGetAllStudentsCallback callback) {
         Realm realm = Realm.getInstance(MedicineAlertApp.getInstance());
-        RealmResults<Medicine> results = realm.where(Medicine.class).equalTo(RealmTable.Medicine.historytype,historytype).findAll();
-        Log.e("datalen",results.size()+"");
+        RealmResults<Medicine> results = realm.where(Medicine.class).equalTo(RealmTable.Medicine.historytype, historytype).findAll();
         if (callback != null)
             callback.onSuccess(results);
-        else Log.e("callabck","is null");
 
 
     }
-
 
 
     @Override
@@ -94,13 +116,12 @@ public class MedicineRepository implements IMedicineRepository {
     public void updateByNotiId(int id, OnUpdateCallback callback) {
         Realm realm = Realm.getInstance(MedicineAlertApp.getInstance());
 
-            Medicine toEdit = realm.where(Medicine.class)
-                    .equalTo(RealmTable.Medicine.notificationId,id).findFirst();
-            realm.beginTransaction();
-            toEdit.setHistorytype(0); // move to expiry list
-            realm.commitTransaction();
-        if(callback!=null)
-        {
+        Medicine toEdit = realm.where(Medicine.class)
+                .equalTo(RealmTable.Medicine.notificationId, id).findFirst();
+        realm.beginTransaction();
+        toEdit.setHistorytype(0); // move to expiry list
+        realm.commitTransaction();
+        if (callback != null) {
             callback.onSuccess("item move to past list");
         }
 

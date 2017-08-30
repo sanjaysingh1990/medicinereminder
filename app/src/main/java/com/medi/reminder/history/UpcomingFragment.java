@@ -21,6 +21,7 @@ import com.medi.reminder.R;
 import com.medi.reminder.adapter.AppAdapter;
 import com.medi.reminder.databinding.FragmentUpcomingPastBinding;
 import com.medi.reminder.realm.IMedicineContract;
+import com.medi.reminder.realm.model.ContactData;
 import com.medi.reminder.realm.model.Medicine;
 import com.medi.reminder.realm.presenters.IMedicinePresenter;
 import com.medi.reminder.realm.presenters.impl.MedicinePresenter;
@@ -135,6 +136,11 @@ public class UpcomingFragment extends BaseFragment implements IMedicineContract 
             showEmptyScreen();
         }
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showContacts(RealmResults<ContactData> contactsList) {
+        //nothing to do
     }
 
     @Override

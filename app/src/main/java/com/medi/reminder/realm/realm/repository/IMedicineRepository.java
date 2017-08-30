@@ -2,6 +2,7 @@ package com.medi.reminder.realm.realm.repository;
 
 
 
+import com.medi.reminder.realm.model.ContactData;
 import com.medi.reminder.realm.model.Medicine;
 
 import io.realm.RealmList;
@@ -17,6 +18,12 @@ public interface IMedicineRepository {
         void onError(String message);
     }
 
+    interface OnSaveContactCallback {
+        void onSuccess();
+        void onError(String message);
+    }
+
+
     interface OnDeleteStudentCallback {
         void onSuccess();
         void onError(String message);
@@ -31,6 +38,12 @@ public interface IMedicineRepository {
         void onSuccess(RealmResults<Medicine> medicines);
         void onError(String message);
     }
+
+    interface OnGetAllContactsCallback {
+        void onSuccess(RealmResults<ContactData> contactList);
+        void onError(String message);
+    }
+
     interface OnUpdateCallback {
         void onSuccess(String message);
         void onError(String message);
@@ -42,7 +55,8 @@ public interface IMedicineRepository {
     }
 
     void addStudent(Medicine medicine, OnSaveStudentCallback callback);
-
+    void addContact(ContactData contactData,OnSaveContactCallback callback);
+    void getAllContacts(OnGetAllContactsCallback callback);
 
     void deleteStudentById(String id, OnDeleteStudentCallback callback);
 

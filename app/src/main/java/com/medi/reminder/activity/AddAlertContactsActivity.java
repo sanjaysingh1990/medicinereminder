@@ -18,6 +18,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,34 +28,49 @@ import com.medi.reminder.PermissionDenied;
 import com.medi.reminder.R;
 import com.medi.reminder.adapter.ContactAdapter;
 import com.medi.reminder.databinding.ActivityAddAlertContactsBinding;
-import com.medi.reminder.model.history.ContactData;
+import com.medi.reminder.realm.IMedicineContract;
+import com.medi.reminder.realm.model.ContactData;
+import com.medi.reminder.realm.model.Medicine;
+import com.medi.reminder.realm.presenters.impl.MedicinePresenter;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import io.realm.RealmResults;
 
 
-public class AddAlertContactsActivity extends BaseActivity {
+public class AddAlertContactsActivity extends BaseActivity implements IMedicineContract {
 
     ActivityAddAlertContactsBinding binding;
     private ContactAdapter mAdapter;
     private List<ContactData> mList;
+    private MedicinePresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_add_alert_contacts);
+        presenter = new MedicinePresenter(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        init();
+    }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+
+        presenter.subscribeCallbacks();
+        presenter.getAllContacts();
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        init();
-
+    public void onStop() {
+        super.onStop();
+        presenter.unSubscribeCallbacks();
     }
 
     private void init() {
@@ -181,23 +197,19 @@ public class AddAlertContactsActivity extends BaseActivity {
                 new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
                         ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI},
 
-                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ? AND " +
-                        ContactsContract.CommonDataKinds.Phone.TYPE + " = " +
-                        ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE,
+                ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " +
 
-                new String[]{contactID}, null);
+                        contactID, null, null);
 
-        showMessage(cursorPhone.moveToFirst()+"dfaf"+contactID);
+        showMessage("hello");
         if (cursorPhone.moveToFirst()) {
 
-            String contactNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-                    + ":" + cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            String contactNumber = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
             String contactName = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
             String image_thumb = cursorPhone.getString(cursorPhone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_THUMBNAIL_URI));
-
             Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                     ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + contactID, null, null);
-            showMessage(contactNumber + " ," + contactName);
             while (phones.moveToNext()) {
                 String number = (phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)).replace(" ", ""));
                 String name = (phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)));
@@ -215,6 +227,17 @@ public class AddAlertContactsActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
+            ContactData contactData = new ContactData();
+            contactData.setContactName(contactName);
+            contactData.setPhoneNo(contactNumber);
+            contactData.setPhone(false);
+            contactData.setSms(false);
+            mList.add(contactData);
+            mAdapter.notifyDataSetChanged();
+            presenter.addContact(contactData);
+            showMessage(contactNumber + "," + contactName + "," + mList.size());
+
+
         }
 
         cursorPhone.close();
@@ -225,4 +248,22 @@ public class AddAlertContactsActivity extends BaseActivity {
     }
 
 
+    @Override
+    public void showStudents(RealmResults<Medicine> medicines) {
+        //nothing to do
+    }
+
+    @Override
+    public void showContacts(RealmResults<ContactData> contactsList) {
+        Log.e("data", "received");
+        mList.clear();
+        for (int i = 0; i < contactsList.size(); i++) {
+            mList.add(contactsList.get(i));
+        }
+        //no data found show empty screen
+        if (mList.size() == 0) {
+            //   showEmptyScreen();
+        }
+        mAdapter.notifyDataSetChanged();
+    }
 }

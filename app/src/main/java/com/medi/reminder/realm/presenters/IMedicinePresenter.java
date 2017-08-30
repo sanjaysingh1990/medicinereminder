@@ -1,6 +1,7 @@
 package com.medi.reminder.realm.presenters;
 
 
+import com.medi.reminder.realm.model.ContactData;
 import com.medi.reminder.realm.model.Medicine;
 import com.medi.reminder.realm.realm.repository.IMedicineRepository;
 
@@ -10,6 +11,7 @@ import com.medi.reminder.realm.realm.repository.IMedicineRepository;
 public interface IMedicinePresenter extends IBasePresenter{
 
     void addStudent(Medicine medicine);
+    void addContact(ContactData contactData);
 
 
     void deleteStudentByPosition(int position);
@@ -17,6 +19,7 @@ public interface IMedicinePresenter extends IBasePresenter{
     void deleteStudentById(String studentId);
 
     void getAllStudents(int historytype);
+    void getAllContacts();
 
 
     void getStudentById(String id);

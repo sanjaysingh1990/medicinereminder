@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.medi.reminder.realm.IMedicineContract;
+import com.medi.reminder.realm.model.ContactData;
 import com.medi.reminder.realm.model.Medicine;
 import com.medi.reminder.realm.presenters.impl.MedicinePresenter;
 
@@ -32,6 +33,11 @@ public class NotificationPublisher extends BroadcastReceiver implements IMedicin
     @Override
     public void showStudents(RealmResults<Medicine> medicines) {
       //nothing to do
+    }
+
+    @Override
+    public void showContacts(RealmResults<ContactData> contactsList) {
+        //nothing to do
     }
 
     @Override

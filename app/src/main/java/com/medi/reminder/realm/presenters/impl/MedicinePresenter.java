@@ -5,6 +5,7 @@ package com.medi.reminder.realm.presenters.impl;
 import android.util.Log;
 
 import com.medi.reminder.realm.IMedicineContract;
+import com.medi.reminder.realm.model.ContactData;
 import com.medi.reminder.realm.model.Medicine;
 import com.medi.reminder.realm.presenters.IMedicinePresenter;
 import com.medi.reminder.realm.realm.repository.IMedicineRepository;
@@ -26,6 +27,9 @@ public class MedicinePresenter implements IMedicinePresenter {
     private IMedicineRepository.OnGetStudentByIdCallback onGetStudentByIdCallback;
     private IMedicineRepository.OnGetStudentsCallback onGetStudentsCallback;
     private IMedicineRepository.OnUpdateCallback onUpdateCallback;
+    private IMedicineRepository.OnSaveContactCallback onSaveContactCallback;
+    private IMedicineRepository.OnGetAllContactsCallback onGetAllContactsCallback;
+
 
 
 
@@ -42,6 +46,11 @@ public class MedicinePresenter implements IMedicinePresenter {
         studentRepository.addStudent(medicine, onSaveStudentCallback);
     }
 
+    @Override
+    public void addContact(ContactData contactData) {
+        studentRepository.addContact(contactData, onSaveContactCallback);
+
+    }
 
 
     @Override
@@ -59,6 +68,11 @@ public class MedicinePresenter implements IMedicinePresenter {
         studentRepository.getAllStudents(historytype,onGetAllStudentsCallback);
     }
 
+    @Override
+    public void getAllContacts() {
+        studentRepository.getAllContacts(onGetAllContactsCallback);
+
+    }
 
 
     @Override
@@ -85,6 +99,22 @@ public class MedicinePresenter implements IMedicinePresenter {
                 view.showMessage(message);
             }
         };
+
+        onSaveContactCallback = new IMedicineRepository.OnSaveContactCallback() {
+            @Override
+            public void onSuccess() {
+                view.showMessage("ContactSaved");
+            }
+
+            @Override
+            public void onError(String message) {
+                view.showMessage(message);
+            }
+        };
+
+
+
+
         onDeleteStudentCallback = new IMedicineRepository.OnDeleteStudentCallback() {
             @Override
             public void onSuccess() {
@@ -100,6 +130,18 @@ public class MedicinePresenter implements IMedicinePresenter {
             @Override
             public void onSuccess(RealmResults<Medicine> medicines) {
             view.showStudents(medicines);
+            }
+
+            @Override
+            public void onError(String message) {
+                view.showMessage(message);
+            }
+        };
+
+        onGetAllContactsCallback = new IMedicineRepository.OnGetAllContactsCallback() {
+            @Override
+            public void onSuccess(RealmResults<ContactData> contactList) {
+                view.showContacts(contactList);
             }
 
             @Override

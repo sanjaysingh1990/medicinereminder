@@ -17,6 +17,7 @@ import com.medi.reminder.R;
 import com.medi.reminder.adapter.AppAdapter;
 import com.medi.reminder.databinding.FragmentUpcomingPastBinding;
 import com.medi.reminder.realm.IMedicineContract;
+import com.medi.reminder.realm.model.ContactData;
 import com.medi.reminder.realm.model.Medicine;
 import com.medi.reminder.realm.presenters.IMedicinePresenter;
 import com.medi.reminder.realm.presenters.impl.MedicinePresenter;
@@ -33,7 +34,7 @@ import io.realm.RealmResults;
 
 public class PastFragment extends BaseFragment implements IMedicineContract {
 
-     public List<Medicine> mList = new ArrayList<>();
+    public List<Medicine> mList = new ArrayList<>();
     private FragmentUpcomingPastBinding binding;
     private AppAdapter mAdapter;
     private IMedicinePresenter presenter;
@@ -55,14 +56,14 @@ public class PastFragment extends BaseFragment implements IMedicineContract {
     private void init() {
 
 
-        mAdapter = new AppAdapter(getActivity(), mList,Constants.HISTORY_ALERT, new ActionCallBack() {
+        mAdapter = new AppAdapter(getActivity(), mList, Constants.HISTORY_ALERT, new ActionCallBack() {
             @Override
             public void cancelSchedule(int position) {
 
             }
         });
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
-        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.divider));
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.divider));
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         binding.recyclerView.setLayoutManager(mLayoutManager);
         binding.recyclerView.addItemDecoration(dividerItemDecoration);
@@ -70,6 +71,7 @@ public class PastFragment extends BaseFragment implements IMedicineContract {
 
 
     }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -98,6 +100,11 @@ public class PastFragment extends BaseFragment implements IMedicineContract {
     }
 
     @Override
+    public void showContacts(RealmResults<ContactData> contactsList) {
+        //nothing to do
+    }
+
+    @Override
     public void showMessage(String message) {
         super.showMessage(message);
     }
@@ -106,4 +113,4 @@ public class PastFragment extends BaseFragment implements IMedicineContract {
         binding.textNodata.setText("No Past Alerts!");
         binding.textNodata.setVisibility(View.VISIBLE);
     }
-  }
+}

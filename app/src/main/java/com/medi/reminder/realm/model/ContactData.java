@@ -1,14 +1,32 @@
-package com.medi.reminder.model.history;
+package com.medi.reminder.realm.model;
+
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.Required;
 
 /**
  * Created by android on 30/8/17.
  */
 
-public class ContactData {
+public class ContactData extends RealmObject {
+    @PrimaryKey
+    private String id;
+    @Required
     private String contactName;
+    @Required
     private String phoneNo;
+
     private boolean sms;
+
     private boolean phone;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getContactName() {
         return contactName;

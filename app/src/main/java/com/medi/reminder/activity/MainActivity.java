@@ -42,6 +42,7 @@ import com.medi.reminder.R;
 import com.medi.reminder.databinding.ActivityMainBinding;
 import com.medi.reminder.history.HistoryActivity;
 import com.medi.reminder.realm.IMedicineContract;
+import com.medi.reminder.realm.model.ContactData;
 import com.medi.reminder.realm.model.Medicine;
 import com.medi.reminder.realm.presenters.impl.MedicinePresenter;
 import com.medi.reminder.receiver.MyReceiver;
@@ -110,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
 
 
     public void initNavigationDrawer() {
-        binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+       // binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         binding.navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -477,6 +478,11 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
 
     @Override
     public void showStudents(RealmResults<Medicine> medicines) {
+        //nothing to do
+    }
+
+    @Override
+    public void showContacts(RealmResults<ContactData> contactsList) {
         //nothing to do
     }
 

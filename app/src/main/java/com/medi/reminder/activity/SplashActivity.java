@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
 import com.medi.reminder.R;
+import com.medi.reminder.login.PhoneAuthActivity;
 
 
 public class SplashActivity extends AppCompatActivity {
@@ -20,7 +21,7 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                startActivity(new Intent(SplashActivity.this, MainActivity.class));
+                startActivity(new Intent(SplashActivity.this, PhoneAuthActivity.class));
                 finish();
             }
         }, SPLASHTIME);

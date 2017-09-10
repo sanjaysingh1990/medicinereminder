@@ -13,6 +13,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +25,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -47,6 +50,9 @@ import com.medi.reminder.realm.model.Medicine;
 import com.medi.reminder.realm.presenters.impl.MedicinePresenter;
 import com.medi.reminder.receiver.MyReceiver;
 import com.medi.reminder.receiver.NotificationPublisher;
+import com.medi.reminder.setttings.ActivitySettings;
+import com.medi.reminder.utils.SendPushFromDevice;
+import com.medi.reminder.utils.Utils;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -104,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setClickEvent(new ClickHandler());
-        //  setSupportActionBar(binding.toolbar);
+        setSupportActionBar(binding.toolbar);
         initNavigationDrawer();
 
     }
@@ -124,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
                         binding.drawer.closeDrawers();
                         break;
                     case R.id.settings:
-                        Toast.makeText(getApplicationContext(), "Settings", Toast.LENGTH_SHORT).show();
+                       startActivity(new Intent(MainActivity.this, ActivitySettings.class));
                         break;
                     case R.id.history:
                         startActivity(new Intent(MainActivity.this, HistoryActivity.class));
@@ -141,20 +147,20 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
         TextView tv_email = (TextView) header.findViewById(R.id.tv_email);
         tv_email.setText("raj.amalw@learn2crack.com");
 
-//        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.drawer, binding.toolbar, R.string.drawer_open, R.string.drawer_close) {
-//
-//            @Override
-//            public void onDrawerClosed(View v) {
-//                super.onDrawerClosed(v);
-//            }
-//
-//            @Override
-//            public void onDrawerOpened(View v) {
-//                super.onDrawerOpened(v);
-//            }
-//        };
-//        binding.drawer.addDrawerListener(actionBarDrawerToggle);
-//        actionBarDrawerToggle.syncState();
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this, binding.drawer, binding.toolbar, R.string.drawer_open, R.string.drawer_close) {
+
+            @Override
+            public void onDrawerClosed(View v) {
+                super.onDrawerClosed(v);
+            }
+
+            @Override
+            public void onDrawerOpened(View v) {
+                super.onDrawerOpened(v);
+            }
+        };
+        binding.drawer.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
     }
 
 

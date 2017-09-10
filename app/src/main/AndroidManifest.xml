@@ -18,7 +18,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".activity.MainActivity"
             android:screenOrientation="portrait"
-
+            android:theme="@style/AppTheme.NoActionBar"
             />
         <activity
             android:name=".activity.SplashActivity"
@@ -66,6 +66,38 @@
             >
 
         </activity>
+
+
+        <service android:name=".firebase.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+
+        <receiver
+            android:name=".utils.NotificationReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action
+                    android:name="com.google.android.c2dm.intent.RECEIVE"
+                    />
+                <category
+                    android:name="com.qhay.app"
+                    />
+            </intent-filter>
+        </receiver>
+
+        <activity android:name=".login.PhoneAuthActivity"
+        android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:windowSoftInputMode="adjustNothing"
+            >
+
+        </activity>
+        <activity android:name=".setttings.ActivitySettings"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>

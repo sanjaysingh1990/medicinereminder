@@ -27,6 +27,11 @@ public interface Constants {
 
     public static final int UPCOMING_ALERT = 1;
     public static final int HISTORY_ALERT = 0;
+    //server key
+    public static final String SERVER_KEY="AIzaSyBTM29oeLt40CqQ_z-uXxnlPbDQrK6ceXg";
+    public static final String DEVICE_TOKEN="device_token";
+
+    public static final String PHONE_NO="phone_no";
 
 
 }

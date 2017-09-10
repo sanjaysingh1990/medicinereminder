@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "904734377588",
+    "firebase_url": "https://medicinealert-f622f.firebaseio.com",
+    "project_id": "medicinealert-f622f",
+    "storage_bucket": "medicinealert-f622f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:904734377588:android:04cc3a3ac7a2689f",
+        "android_client_info": {
+          "package_name": "com.medi.reminder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "904734377588-j0cdaeft79663kfga7r2c2oovrmn6co4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.medi.reminder",
+            "certificate_hash": "e74416e72d46aa6458b9fbb8c06a537843ce3dc3"
+          }
+        },
+        {
+          "client_id": "904734377588-1tubgalu0hero4118sleoo8r7pko5q2e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD035Yty3enMRBX_qNI1YtCJhnIHHVCWQE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "904734377588-1tubgalu0hero4118sleoo8r7pko5q2e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

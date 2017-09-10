@@ -171,6 +171,14 @@ public class Utils {
         saveValue.apply();
     }
 
+    public synchronized void saveValue(String key, String value, Context context) {
+        if (context == null) return;
+        SharedPreferences prefs = new SharedPreferencesEncryption(context);
+        SharedPreferences.Editor saveValue = prefs.edit();
+        saveValue.putString(key, value);
+        saveValue.apply();
+    }
+
     /**
      * Gets value from shared preference.
      *

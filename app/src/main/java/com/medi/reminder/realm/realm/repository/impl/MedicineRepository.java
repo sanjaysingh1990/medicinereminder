@@ -9,6 +9,7 @@ import com.medi.reminder.realm.realm.table.RealmTable;
 import java.util.UUID;
 
 import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import io.realm.RealmQuery;
 import io.realm.RealmResults;
 
@@ -19,7 +20,9 @@ public class MedicineRepository implements IMedicineRepository {
 
     @Override
     public void addStudent(Medicine medicine, OnSaveStudentCallback callback) {
-        Realm realm = Realm.getInstance(MedicineAlertApp.getInstance());
+        Realm realm = MedicineAlertApp.getInstance();
+
+
         realm.beginTransaction();
         Medicine realmMedicine = realm.createObject(Medicine.class);
         realmMedicine.setId(UUID.randomUUID().toString());
@@ -40,7 +43,7 @@ public class MedicineRepository implements IMedicineRepository {
 
     @Override
     public void addContact(ContactData contactData, OnSaveContactCallback callback) {
-        Realm realm = Realm.getInstance(MedicineAlertApp.getInstance());
+        Realm realm = MedicineAlertApp.getInstance();
         realm.beginTransaction();
         ContactData data = realm.createObject(ContactData.class);
         data.setId(UUID.randomUUID().toString());
@@ -59,7 +62,7 @@ public class MedicineRepository implements IMedicineRepository {
 
     @Override
     public void getAllContacts(OnGetAllContactsCallback callback) {
-        Realm realm = Realm.getInstance(MedicineAlertApp.getInstance());
+        Realm realm = MedicineAlertApp.getInstance();
         RealmResults<ContactData> results = realm.where(ContactData.class).findAll();
         if (callback != null)
             callback.onSuccess(results);
@@ -68,7 +71,7 @@ public class MedicineRepository implements IMedicineRepository {
 
     @Override
     public void deleteStudentById(String id, OnDeleteStudentCallback callback) {
-        Realm realm = Realm.getInstance(MedicineAlertApp.getInstance());
+        Realm realm = MedicineAlertApp.getInstance();
         realm.beginTransaction();
         Medicine result = realm.where(Medicine.class).equalTo(RealmTable.ID, id).findFirst();
         result.removeFromRealm();
@@ -80,7 +83,7 @@ public class MedicineRepository implements IMedicineRepository {
 
     @Override
     public void deleteStudentByPosition(int position, OnDeleteStudentCallback callback) {
-        Realm realm = Realm.getInstance(MedicineAlertApp.getInstance());
+        Realm realm = MedicineAlertApp.getInstance();
         realm.beginTransaction();
         RealmQuery<Medicine> query = realm.where(Medicine.class);
         RealmResults<Medicine> results = query.findAll();
@@ -93,7 +96,7 @@ public class MedicineRepository implements IMedicineRepository {
 
     @Override
     public void getAllStudents(int historytype, OnGetAllStudentsCallback callback) {
-        Realm realm = Realm.getInstance(MedicineAlertApp.getInstance());
+        Realm realm = MedicineAlertApp.getInstance();
         RealmResults<Medicine> results = realm.where(Medicine.class).equalTo(RealmTable.Medicine.historytype, historytype).findAll();
         if (callback != null)
             callback.onSuccess(results);
@@ -104,7 +107,7 @@ public class MedicineRepository implements IMedicineRepository {
 
     @Override
     public void getStudentById(String id, OnGetStudentByIdCallback callback) {
-        Realm realm = Realm.getInstance(MedicineAlertApp.getInstance());
+        Realm realm = MedicineAlertApp.getInstance();
         Medicine medicine = realm.where(Medicine.class).equalTo(RealmTable.ID, id).findFirst();
 
         if (callback != null)
@@ -114,7 +117,7 @@ public class MedicineRepository implements IMedicineRepository {
 
     @Override
     public void updateByNotiId(int id, OnUpdateCallback callback) {
-        Realm realm = Realm.getInstance(MedicineAlertApp.getInstance());
+        Realm realm = MedicineAlertApp.getInstance();
 
         Medicine toEdit = realm.where(Medicine.class)
                 .equalTo(RealmTable.Medicine.notificationId, id).findFirst();

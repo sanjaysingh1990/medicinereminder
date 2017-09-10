@@ -93,7 +93,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
                 public void onClick(View view) {
                     CheckBox checkBox = (CheckBox) view;
                     ContactData contactData = mList.get(getAdapterPosition());
-                    Realm realm = Realm.getInstance(MedicineAlertApp.getInstance());
+                    Realm realm = MedicineAlertApp.getInstance();
                     realm.beginTransaction();
                     if (checkBox.isChecked()) {
 
@@ -110,7 +110,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactH
                 public void onClick(View view) {
                     CheckBox checkBox = (CheckBox) view;
                     ContactData contactData = mList.get(getAdapterPosition());
-                    Realm realm = Realm.getInstance(MedicineAlertApp.getInstance());
+                    Realm realm = MedicineAlertApp.getInstance();
                     realm.beginTransaction();
 
                     if (checkBox.isChecked()) {

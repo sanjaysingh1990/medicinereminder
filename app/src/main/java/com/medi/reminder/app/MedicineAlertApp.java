@@ -1,6 +1,7 @@
 package com.medi.reminder.app;
 
 import android.app.Application;
+import android.content.Context;
 
 
 import com.medi.reminder.realm.realm.module.SimpleRealmModule;
@@ -19,11 +20,29 @@ public class MedicineAlertApp extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        RealmConfiguration config = new RealmConfiguration.Builder(getApplicationContext()).deleteRealmIfMigrationNeeded().setModules(new SimpleRealmModule()).build();
-        Realm.setDefaultConfiguration(config);
+//        RealmConfiguration config = new RealmConfiguration.Builder(getApplicationContext()).deleteRealmIfMigrationNeeded().setModules(new SimpleRealmModule()).build();
+//        Realm.setDefaultConfiguration(config);
     }
 
-    public static MedicineAlertApp getInstance() {
+    public static Context getContextValue()
+    {
         return instance;
+    }
+
+    public static Realm getInstance() {
+        Realm realm;
+        try{
+            realm = Realm.getDefaultInstance();
+
+        }catch (Exception e){
+
+            // Get a Realm instance for this thread
+            RealmConfiguration config = new RealmConfiguration.Builder(instance)
+                    .deleteRealmIfMigrationNeeded()
+                    .build();
+            realm = Realm.getInstance(config);
+
+        }
+        return realm;
     }
 }

@@ -1,0 +1,26 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- These settings headers are only used on tablets. -->
+
+    <header
+        android:fragment="com.medi.reminder.setttings.ActivitySettings$GeneralPreferenceFragment"
+        android:icon="@drawable/ic_navi_settings_icon"
+        android:title="@string/pref_header_setting">
+        <extra android:name="settings" android:value="prefs_general" ></extra>
+    </header>
+
+    <header
+        android:fragment="com.medi.reminder.setttings.ActivitySettings$GeneralPreferenceFragment"
+        android:icon="@drawable/ic_noti_alert_icon"
+        android:title="@string/pref_header_notification" >
+        <extra android:name="settings" android:value="prefs_notification" ></extra>
+    </header>
+
+    <header
+        android:fragment="com.medi.reminder.setttings.ActivitySettings$GeneralPreferenceFragment"
+        android:icon="@drawable/ic_navi_logout_icon"
+        android:title="@string/pref_header_more" >
+        <extra android:name="settings" android:value="prefs_sync" ></extra>
+    </header>
+
+</preference-headers>

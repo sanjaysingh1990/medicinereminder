@@ -15,6 +15,26 @@
         android:dialogMessage="Customise Notification Ringtone for you"
         android:dependency="notifications_new_message"/>
 
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="sms_to_alret"
+        android:title="Send SMS to alert" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="push_to_alret"
+        android:title="Send push to alert" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="response_in_alret"
+        android:title="Get response in push" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="set_alert_remotely"
+        android:title="Enable schedule remotely" />
 
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="save_past_history"
+        android:title="Save history" />
 
 </PreferenceScreen>

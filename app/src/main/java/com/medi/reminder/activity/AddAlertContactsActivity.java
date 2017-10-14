@@ -18,16 +18,29 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 import com.medi.reminder.Constants;
 import com.medi.reminder.PermissionDenied;
 import com.medi.reminder.R;
 import com.medi.reminder.adapter.ContactAdapter;
 import com.medi.reminder.databinding.ActivityAddAlertContactsBinding;
+import com.medi.reminder.login.MyAppUser;
 import com.medi.reminder.realm.IMedicineContract;
 import com.medi.reminder.realm.model.ContactData;
 import com.medi.reminder.realm.model.Medicine;
@@ -35,6 +48,7 @@ import com.medi.reminder.realm.presenters.impl.MedicinePresenter;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
@@ -45,7 +59,7 @@ public class AddAlertContactsActivity extends BaseActivity implements IMedicineC
 
     ActivityAddAlertContactsBinding binding;
     private ContactAdapter mAdapter;
-    private List<ContactData> mList;
+    private List<Object> mList;
     private MedicinePresenter presenter;
 
     @Override
@@ -55,8 +69,32 @@ public class AddAlertContactsActivity extends BaseActivity implements IMedicineC
         presenter = new MedicinePresenter(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         init();
+        setListener();
     }
 
+    private void setListener() {
+      binding.searchBox.addTextChangedListener(new TextWatcher() {
+          @Override
+          public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+          }
+
+          @Override
+          public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+           if(charSequence.length()>9)
+           {
+               String phoneNo="+"+binding.ccp.getDefaultCountryCode()+charSequence;
+               Log.e("phoneno",phoneNo);
+               checkPlayerNum(phoneNo);
+           }
+          }
+
+          @Override
+          public void afterTextChanged(Editable editable) {
+
+          }
+      });
+    }
 
     @Override
     public void onStart() {
@@ -247,6 +285,42 @@ public class AddAlertContactsActivity extends BaseActivity implements IMedicineC
         }
     }
 
+    public void addContact(MyAppUser myAppUser,int pos)
+    {
+        boolean isfound=false;
+        for(Object obj:mList)
+        {
+            if(obj instanceof ContactData)
+            {
+                ContactData contactData= (ContactData) obj;
+                if(myAppUser.getUserPhone().compareToIgnoreCase(contactData.getPhoneNo())==0)
+                {
+                    isfound=true;
+                    break;
+                }
+            }
+        }
+        if(!isfound)
+        {
+            ContactData contactData = new ContactData();
+            contactData.setContactName(myAppUser.getUserName());
+            contactData.setPhoneNo(myAppUser.getUserPhone());
+            contactData.setPhone(false);
+            contactData.setSms(false);
+            mList.add(contactData);
+            mAdapter.notifyDataSetChanged();
+            presenter.addContact(contactData);
+            showMessage(myAppUser.getUserName() + "," + myAppUser.getUserPhone() + "," + mList.size());
+        }
+        else
+        {
+            showMessage("Contact already saved!");
+
+        }
+
+        mList.remove(pos);
+        mAdapter.notifyItemRemoved(pos);
+    }
 
     @Override
     public void showStudents(RealmResults<Medicine> medicines) {
@@ -265,5 +339,80 @@ public class AddAlertContactsActivity extends BaseActivity implements IMedicineC
             //   showEmptyScreen();
         }
         mAdapter.notifyDataSetChanged();
+    }
+
+    private void showProgress() {
+        binding.progressbarSearching.setVisibility(View.VISIBLE);
+        binding.textSearchHeading.setVisibility(View.VISIBLE);
+
+
+    }
+
+    private void hideProgress() {
+        binding.progressbarSearching.setVisibility(View.INVISIBLE);
+        binding.textSearchHeading.setVisibility(View.INVISIBLE);
+
+
+    }
+
+    public void removeContact(int pos)
+    {
+        presenter.deleteContactByPosition(pos);
+        mList.remove(pos);
+        mAdapter.notifyItemRemoved(pos);
+
+    }
+
+    private DatabaseReference mDatabase;
+
+    public void checkPlayerNum(final String phoneNum) {
+        showProgress();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        if (!TextUtils.isEmpty(phoneNum)) {
+            final Query phoneNumReference = mDatabase.child("users").orderByChild("userPhone").equalTo(phoneNum);
+
+            ValueEventListener phoneNumValueEventListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                        hideProgress();
+                        // user exists
+                            for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()) {
+
+
+                                MyAppUser myAppUser = dataSnapshot1.getValue(MyAppUser.class);
+
+                                String clubkey = dataSnapshot1.getKey();
+                                Log.e("key", dataSnapshot.getChildrenCount() + "" + clubkey);
+                                // getUserInf(clubkey);
+                                Iterator<Object> it = mList.iterator();
+                                while (it.hasNext()) {
+                                    if(it.next() instanceof MyAppUser)
+                                    {
+                                        it.remove();
+                                    }
+
+                                }
+
+                                mList.add(0,myAppUser);
+                                mAdapter.notifyDataSetChanged();
+                            }
+
+
+
+                    }
+
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    hideProgress();
+                }
+            };
+
+            phoneNumReference.addListenerForSingleValueEvent(phoneNumValueEventListener);
+
+
+        } else {
+            Log.e("Error", "phoneNum is null");
+        }
     }
 }

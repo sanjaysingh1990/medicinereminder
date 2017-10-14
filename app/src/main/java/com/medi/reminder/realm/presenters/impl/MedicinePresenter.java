@@ -29,6 +29,7 @@ public class MedicinePresenter implements IMedicinePresenter {
     private IMedicineRepository.OnUpdateCallback onUpdateCallback;
     private IMedicineRepository.OnSaveContactCallback onSaveContactCallback;
     private IMedicineRepository.OnGetAllContactsCallback onGetAllContactsCallback;
+    private IMedicineRepository.OnDeleteContactCallback onDeleteContactCallback;
 
 
 
@@ -56,6 +57,12 @@ public class MedicinePresenter implements IMedicinePresenter {
     @Override
     public void deleteStudentByPosition(int position) {
         studentRepository.deleteStudentByPosition(position, onDeleteStudentCallback);
+    }
+
+    @Override
+    public void deleteContactByPosition(int position) {
+       studentRepository.deleteContactByPosition(position,onDeleteContactCallback);
+
     }
 
     @Override
@@ -126,6 +133,20 @@ public class MedicinePresenter implements IMedicinePresenter {
                 view.showMessage(message);
             }
         };
+
+
+        onDeleteContactCallback = new IMedicineRepository.OnDeleteContactCallback() {
+            @Override
+            public void onSuccess() {
+                view.showMessage("Contact Removed!");
+            }
+
+            @Override
+            public void onError(String message) {
+                view.showMessage(message);
+            }
+        };
+
         onGetAllStudentsCallback = new IMedicineRepository.OnGetAllStudentsCallback() {
             @Override
             public void onSuccess(RealmResults<Medicine> medicines) {

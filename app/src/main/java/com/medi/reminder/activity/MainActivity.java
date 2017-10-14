@@ -135,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
                     case R.id.history:
                         startActivity(new Intent(MainActivity.this, HistoryActivity.class));
                         binding.drawer.closeDrawers();
+                        overridePendingTransition(R.anim.right_in, R.anim.left_out);
                         break;
                     case R.id.logout:
                         finish();

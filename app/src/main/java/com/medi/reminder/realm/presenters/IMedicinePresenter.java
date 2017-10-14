@@ -15,6 +15,7 @@ public interface IMedicinePresenter extends IBasePresenter{
 
 
     void deleteStudentByPosition(int position);
+    void deleteContactByPosition(int position);
 
     void deleteStudentById(String studentId);
 

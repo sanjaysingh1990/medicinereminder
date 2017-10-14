@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
@@ -56,34 +55,24 @@
                 app:layout_constraintTop_toBottomOf="@+id/text_contact_name" />
 
 
-            <CheckBox
-                android:id="@+id/checkBox_sms"
+            <Button
+                android:id="@+id/button_add_contact"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="16dp"
 
-                android:text="SMS"
+                android:text="ADD TO LIST"
                 android:textColor="@color/colorAccent"
                 app:layout_constraintLeft_toLeftOf="@+id/guideline2"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginRight="8dp"
-                app:layout_constraintRight_toRightOf="@+id/checkBox_phone" />
-
-            <CheckBox
-                android:id="@+id/checkBox_phone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginLeft="12dp"
-                android:layout_marginTop="7dp"
-                android:text="PUSH"
-
-                android:textColor="@color/colorAccent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="@+id/guideline2"
-                app:layout_constraintTop_toBottomOf="@+id/checkBox_sms"
-                app:layout_constraintVertical_bias="0.0" />
+                android:layout_marginBottom="16dp"
+                app:layout_constraintVertical_bias="0.0"
+                android:layout_marginRight="16dp"
+                app:layout_constraintRight_toRightOf="parent" />
+
+
 
             <android.support.constraint.Guideline
                 android:id="@+id/guideline2"
@@ -91,23 +80,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.71" />
-
-
-            <Button
-                android:id="@+id/button_remove_contact"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:text="REMOVE CONTACT"
-                android:textColor="@color/colorAccent"
-                android:layout_marginRight="7dp"
-                app:layout_constraintRight_toRightOf="parent"
-                android:layout_marginLeft="8dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginTop="24dp"
-                app:layout_constraintTop_toBottomOf="@+id/text_contact_no"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginBottom="8dp" />
 
 
         </android.support.constraint.ConstraintLayout>

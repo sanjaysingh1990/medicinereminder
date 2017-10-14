@@ -38,7 +38,7 @@ public class CustomTextView extends TextView {
     private void init(AttributeSet attrs) {
         if (attrs != null) {
             TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.CustomTextView);
-            String fontName = a.getString(R.styleable.CustomTextView_font);
+            String fontName = a.getString(R.styleable.CustomTextView_myfont);
 
             try {
                 if (fontName != null) {

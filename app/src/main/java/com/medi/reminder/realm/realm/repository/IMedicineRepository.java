@@ -29,6 +29,11 @@ public interface IMedicineRepository {
         void onError(String message);
     }
 
+    interface OnDeleteContactCallback {
+        void onSuccess();
+        void onError(String message);
+    }
+
     interface OnGetStudentByIdCallback {
         void onSuccess(Medicine medicine);
         void onError(String message);
@@ -61,6 +66,7 @@ public interface IMedicineRepository {
     void deleteStudentById(String id, OnDeleteStudentCallback callback);
 
     void deleteStudentByPosition(int position, OnDeleteStudentCallback callback);
+    void deleteContactByPosition(int position, OnDeleteContactCallback callback);
 
     void getAllStudents(int historytype,OnGetAllStudentsCallback callback);
 

@@ -95,6 +95,21 @@ public class MedicineRepository implements IMedicineRepository {
     }
 
     @Override
+    public void deleteContactByPosition(int position, OnDeleteContactCallback callback) {
+        Realm realm = MedicineAlertApp.getInstance();
+        realm.beginTransaction();
+        RealmQuery<ContactData> query = realm.where(ContactData.class);
+        RealmResults<ContactData> results = query.findAll();
+        results.remove(position);
+        realm.commitTransaction();
+
+        if (callback != null)
+            callback.onSuccess();
+    }
+
+
+
+    @Override
     public void getAllStudents(int historytype, OnGetAllStudentsCallback callback) {
         Realm realm = MedicineAlertApp.getInstance();
         RealmResults<Medicine> results = realm.where(Medicine.class).equalTo(RealmTable.Medicine.historytype, historytype).findAll();

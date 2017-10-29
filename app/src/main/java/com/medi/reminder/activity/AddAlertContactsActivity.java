@@ -22,10 +22,13 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -73,27 +76,38 @@ public class AddAlertContactsActivity extends BaseActivity implements IMedicineC
     }
 
     private void setListener() {
-      binding.searchBox.addTextChangedListener(new TextWatcher() {
-          @Override
-          public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        binding.searchBox.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-          }
+            }
 
-          @Override
-          public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-           if(charSequence.length()>9)
-           {
-               String phoneNo="+"+binding.ccp.getDefaultCountryCode()+charSequence;
-               Log.e("phoneno",phoneNo);
-               checkPlayerNum(phoneNo);
-           }
-          }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //clear info
+                if (charSequence.length() == 0) {
+                    binding.textSearchHeading.setText(null);
 
-          @Override
-          public void afterTextChanged(Editable editable) {
+                }
+            }
 
-          }
-      });
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        //handle imeoption
+        binding.searchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    searchContact();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -136,8 +150,21 @@ public class AddAlertContactsActivity extends BaseActivity implements IMedicineC
                 if (checkPermission())
                     getContatcts();
                 return true;
+            case R.id.action_search:
+                searchContact();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void searchContact() {
+        String number = binding.searchBox.getText().toString();
+
+        if (number.length() > 0) {
+            String phoneNo = "+" + binding.ccp.getSelectedCountryCode() + number;
+            Log.e("phoneno", phoneNo);
+            checkPlayerNum(phoneNo);
         }
     }
 
@@ -285,23 +312,18 @@ public class AddAlertContactsActivity extends BaseActivity implements IMedicineC
         }
     }
 
-    public void addContact(MyAppUser myAppUser,int pos)
-    {
-        boolean isfound=false;
-        for(Object obj:mList)
-        {
-            if(obj instanceof ContactData)
-            {
-                ContactData contactData= (ContactData) obj;
-                if(myAppUser.getUserPhone().compareToIgnoreCase(contactData.getPhoneNo())==0)
-                {
-                    isfound=true;
+    public void addContact(MyAppUser myAppUser, int pos) {
+        boolean isfound = false;
+        for (Object obj : mList) {
+            if (obj instanceof ContactData) {
+                ContactData contactData = (ContactData) obj;
+                if (myAppUser.getUserPhone().compareToIgnoreCase(contactData.getPhoneNo()) == 0) {
+                    isfound = true;
                     break;
                 }
             }
         }
-        if(!isfound)
-        {
+        if (!isfound) {
             ContactData contactData = new ContactData();
             contactData.setContactName(myAppUser.getUserName());
             contactData.setPhoneNo(myAppUser.getUserPhone());
@@ -311,9 +333,7 @@ public class AddAlertContactsActivity extends BaseActivity implements IMedicineC
             mAdapter.notifyDataSetChanged();
             presenter.addContact(contactData);
             showMessage(myAppUser.getUserName() + "," + myAppUser.getUserPhone() + "," + mList.size());
-        }
-        else
-        {
+        } else {
             showMessage("Contact already saved!");
 
         }
@@ -341,9 +361,13 @@ public class AddAlertContactsActivity extends BaseActivity implements IMedicineC
         mAdapter.notifyDataSetChanged();
     }
 
+    String progressText = "Hold on looking for....";
+
     private void showProgress() {
+
         binding.progressbarSearching.setVisibility(View.VISIBLE);
         binding.textSearchHeading.setVisibility(View.VISIBLE);
+        binding.textSearchHeading.setText(progressText);
 
 
     }
@@ -351,15 +375,36 @@ public class AddAlertContactsActivity extends BaseActivity implements IMedicineC
     private void hideProgress() {
         binding.progressbarSearching.setVisibility(View.INVISIBLE);
         binding.textSearchHeading.setVisibility(View.INVISIBLE);
+        binding.textSearchHeading.setText(progressText);
 
 
     }
 
-    public void removeContact(int pos)
-    {
-        presenter.deleteContactByPosition(pos);
-        mList.remove(pos);
-        mAdapter.notifyItemRemoved(pos);
+    private void noResultFound() {
+        binding.progressbarSearching.setVisibility(View.INVISIBLE);
+        binding.textSearchHeading.setVisibility(View.VISIBLE);
+        binding.textSearchHeading.setText("No result found!");
+
+
+    }
+
+
+    public void removeContact(final int pos) {
+        new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
+                .setTitleText("Alert")
+                .setContentText("Are you sure want to remove ?")
+                .setConfirmText("YES")
+                .setCancelText("NO")
+                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                    @Override
+                    public void onClick(SweetAlertDialog sDialog) {
+                        sDialog.dismiss();
+                        presenter.deleteContactByPosition(pos);
+                        mList.remove(pos);
+                        mAdapter.notifyItemRemoved(pos);
+                    }
+                }).show();
+
 
     }
 
@@ -374,32 +419,36 @@ public class AddAlertContactsActivity extends BaseActivity implements IMedicineC
             ValueEventListener phoneNumValueEventListener = new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                        hideProgress();
-                        // user exists
-                            for(DataSnapshot dataSnapshot1:dataSnapshot.getChildren()) {
+                    hideProgress();
+                    // user exists
+                    for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
 
+                        binding.searchBox.setText(null);
 
-                                MyAppUser myAppUser = dataSnapshot1.getValue(MyAppUser.class);
+                        MyAppUser myAppUser = dataSnapshot1.getValue(MyAppUser.class);
 
-                                String clubkey = dataSnapshot1.getKey();
-                                Log.e("key", dataSnapshot.getChildrenCount() + "" + clubkey);
-                                // getUserInf(clubkey);
-                                Iterator<Object> it = mList.iterator();
-                                while (it.hasNext()) {
-                                    if(it.next() instanceof MyAppUser)
-                                    {
-                                        it.remove();
-                                    }
-
-                                }
-
-                                mList.add(0,myAppUser);
-                                mAdapter.notifyDataSetChanged();
+                        String clubkey = dataSnapshot1.getKey();
+                        Log.e("key", dataSnapshot.getChildrenCount() + "" + clubkey);
+                        // getUserInf(clubkey);
+                        Iterator<Object> it = mList.iterator();
+                        while (it.hasNext()) {
+                            if (it.next() instanceof MyAppUser) {
+                                it.remove();
                             }
 
+                        }
 
-
+                        mList.add(0, myAppUser);
+                        mAdapter.notifyDataSetChanged();
                     }
+
+                    //IF NO RESULT FOUND
+                    if (dataSnapshot.getChildrenCount() == 0) {
+                        noResultFound();
+                    }
+
+
+                }
 
 
                 @Override

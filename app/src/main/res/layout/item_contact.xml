@@ -75,13 +75,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:layout_marginLeft="12dp"
                 android:layout_marginTop="7dp"
                 android:text="PUSH"
 
                 android:textColor="@color/colorAccent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="@+id/guideline2"
+                app:layout_constraintStart_toStartOf="@+id/guideline2"
                 app:layout_constraintTop_toBottomOf="@+id/checkBox_sms"
                 app:layout_constraintVertical_bias="0.0" />
 

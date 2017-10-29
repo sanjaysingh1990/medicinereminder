@@ -21,6 +21,7 @@ public interface IMedicinePresenter extends IBasePresenter{
 
     void getAllStudents(int historytype);
     void getAllContacts();
+    void delAllRecords();
 
 
     void getStudentById(String id);

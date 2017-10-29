@@ -30,6 +30,7 @@ public class MedicinePresenter implements IMedicinePresenter {
     private IMedicineRepository.OnSaveContactCallback onSaveContactCallback;
     private IMedicineRepository.OnGetAllContactsCallback onGetAllContactsCallback;
     private IMedicineRepository.OnDeleteContactCallback onDeleteContactCallback;
+    private IMedicineRepository.OnClearAllDataCallback onDeleteAllDataCallback;
 
 
 
@@ -79,6 +80,11 @@ public class MedicinePresenter implements IMedicinePresenter {
     public void getAllContacts() {
         studentRepository.getAllContacts(onGetAllContactsCallback);
 
+    }
+
+    @Override
+    public void delAllRecords() {
+        studentRepository.delAllRecords(onDeleteAllDataCallback);
     }
 
 
@@ -159,6 +165,18 @@ public class MedicinePresenter implements IMedicinePresenter {
             }
         };
 
+        onDeleteAllDataCallback=new IMedicineRepository.OnClearAllDataCallback() {
+            @Override
+            public void onSuccess(String message) {
+                view.showMessage(message);
+            }
+
+            @Override
+            public void onError(String message) {
+                view.showMessage(message);
+
+            }
+        };
         onGetAllContactsCallback = new IMedicineRepository.OnGetAllContactsCallback() {
             @Override
             public void onSuccess(RealmResults<ContactData> contactList) {

@@ -101,7 +101,8 @@ public class ActivitySettings extends AppCompatPreferenceActivity {
                 // Load the preferences from an XML resource
                 preferenceFile_toLoad=R.xml.pref_data_sync;
             }
-Toast.makeText(getActivity(),"called",Toast.LENGTH_LONG).show();
+
+            if(preferenceFile_toLoad>-1)
             addPreferencesFromResource(preferenceFile_toLoad);
 
 

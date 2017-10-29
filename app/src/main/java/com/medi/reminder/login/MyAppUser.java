@@ -7,6 +7,16 @@ package com.medi.reminder.login;
 public class MyAppUser {
     private String userName;
 
+    public String getDeviceToken() {
+        return deviceToken;
+    }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
+    }
+
+    private String deviceToken;
+
     public String getUserName() {
         return userName;
     }
@@ -22,6 +32,7 @@ public class MyAppUser {
     public void setUserPhone(String userPhone) {
         this.userPhone = userPhone;
     }
+
 
     private String userPhone;
 }

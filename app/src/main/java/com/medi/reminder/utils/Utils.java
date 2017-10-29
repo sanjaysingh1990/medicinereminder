@@ -25,8 +25,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.medi.reminder.Constants;
 import com.medi.reminder.R;
-import com.medi.reminder.cryptography.SharedPreferencesEncryption;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -165,7 +165,7 @@ public class Utils {
      */
     public synchronized void saveValue(String key, long value, Context context) {
         if (context == null) return;
-        SharedPreferences prefs = new SharedPreferencesEncryption(context);
+        SharedPreferences prefs = context.getSharedPreferences(Constants.FILE,Context.MODE_PRIVATE);
         SharedPreferences.Editor saveValue = prefs.edit();
         saveValue.putLong(key, value);
         saveValue.apply();
@@ -173,7 +173,7 @@ public class Utils {
 
     public synchronized void saveValue(String key, String value, Context context) {
         if (context == null) return;
-        SharedPreferences prefs = new SharedPreferencesEncryption(context);
+        SharedPreferences prefs = context.getSharedPreferences(Constants.FILE,Context.MODE_PRIVATE);
         SharedPreferences.Editor saveValue = prefs.edit();
         saveValue.putString(key, value);
         saveValue.apply();
@@ -191,7 +191,7 @@ public class Utils {
      */
     public synchronized String getValue(String key, String defaultValue, Context context) {
         if (context == null) return null;
-        SharedPreferences prefs = new SharedPreferencesEncryption(context);
+        SharedPreferences prefs = context.getSharedPreferences(Constants.FILE,Context.MODE_PRIVATE);
         return prefs.getString(key, defaultValue);
     }
 
@@ -207,7 +207,7 @@ public class Utils {
      */
     public synchronized void saveValue(String key, boolean value, Context context) {
         if (context == null) return;
-        SharedPreferences prefs = new SharedPreferencesEncryption(context);
+        SharedPreferences prefs = context.getSharedPreferences(Constants.FILE,Context.MODE_PRIVATE);
         SharedPreferences.Editor saveValue = prefs.edit();
         saveValue.putBoolean(key, value);
         saveValue.apply();
@@ -225,7 +225,7 @@ public class Utils {
      */
     public synchronized int getValue(String key, int defaultValue, Context context) {
         if (context == null) return 0;
-        SharedPreferences prefs = new SharedPreferencesEncryption(context);
+        SharedPreferences prefs = context.getSharedPreferences(Constants.FILE,Context.MODE_PRIVATE);
         return prefs.getInt(key, defaultValue);
     }
 
@@ -241,7 +241,7 @@ public class Utils {
      */
     public synchronized long getValue(String key, long defaultValue, Context context) {
         if (context == null) return 0l;
-        SharedPreferences prefs = new SharedPreferencesEncryption(context);
+        SharedPreferences prefs = context.getSharedPreferences(Constants.FILE,Context.MODE_PRIVATE);
         return prefs.getLong(key, defaultValue);
     }
 
@@ -255,7 +255,7 @@ public class Utils {
      */
     public synchronized void clearValueOfKey(Context context, String key) {
         if (context == null) return;
-        SharedPreferences prefs = new SharedPreferencesEncryption(context);
+        SharedPreferences prefs = context.getSharedPreferences(Constants.FILE,Context.MODE_PRIVATE);
         SharedPreferences.Editor saveValue = prefs.edit();
         saveValue.remove(key).apply();
     }
@@ -272,10 +272,16 @@ public class Utils {
      */
     public synchronized boolean getValue(String key, boolean defaultValue, Context context) {
         if (context == null) return false;
-        SharedPreferences prefs = new SharedPreferencesEncryption(context);
+        SharedPreferences prefs = context.getSharedPreferences(Constants.FILE,Context.MODE_PRIVATE);
         return prefs.getBoolean(key, defaultValue);
     }
 
+    public void clearValues(Context context)
+    {
+
+        context.getSharedPreferences(Constants.FILE, Context.MODE_PRIVATE).edit().clear().commit();
+
+    }
     /**
      * Is email valid.
      *

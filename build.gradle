@@ -20,6 +20,12 @@ allprojects {
             url "https://maven.google.com" // Google's Maven repository
         }
     }
+    ext.daggerVersion = '1.0.0';
+    ext.androidAnnotationsVersion = '2.7.1';
+
+    configurations {
+        apt
+    }
 }
 
 task clean(type: Delete) {

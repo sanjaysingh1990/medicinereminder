@@ -23,11 +23,6 @@
         <extra android:name="settings" android:value="prefs_sync" ></extra>
     </header>
 
-    <header
-        android:fragment="com.medi.reminder.setttings.ActivitySettings$GeneralPreferenceFragment"
-        android:icon="@drawable/ic_navi_logout_icon"
-        android:title="@string/logout" >
-        <extra android:name="settings" android:value="prefs_logout" ></extra>
-    </header>
+
 
 </preference-headers>

@@ -32,6 +32,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.medi.reminder.Constants;
 import com.medi.reminder.R;
 import com.medi.reminder.activity.MainActivity;
 import com.medi.reminder.utils.Utils;
@@ -247,25 +249,7 @@ public class PhoneAuthActivity extends AppCompatActivity implements
 
                             FirebaseUser user = task.getResult().getUser();
 
-                            MyAppUser appuser = new MyAppUser();
-                            appuser.setUserName("SANJAY SINGH BISHT");
-                            appuser.setUserPhone(user.getPhoneNumber());
-
-
-                            mDatabase.child("users").child(user.getPhoneNumber()).setValue(appuser).addOnSuccessListener(PhoneAuthActivity.this, new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Toast.makeText(PhoneAuthActivity.this, "informatin saved", Toast.LENGTH_LONG).show();
-
-
-                                }
-                            }).addOnFailureListener(PhoneAuthActivity.this, new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(PhoneAuthActivity.this, "error:" + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
-
-                                }
-                            });
+                            saveUserInfo(user);
 
 //                             mDatabase.child("my_app_user").child(user.getUid()).orderByChild("userPhone").equalTo("+919411702581").addListenerForSingleValueEvent(new ValueEventListener() {
 //                                @Override
@@ -281,7 +265,7 @@ public class PhoneAuthActivity extends AppCompatActivity implements
 //                            });
 
 
-                            checkPlayerNum(user.getPhoneNumber());
+                            //checkPlayerNum(user.getPhoneNumber());
 
 
                             // [START_EXCLUDE]
@@ -305,6 +289,39 @@ public class PhoneAuthActivity extends AppCompatActivity implements
                 });
     }
 
+    private void saveUserInfo(FirebaseUser user)
+    {
+        MyAppUser appuser = new MyAppUser();
+        appuser.setUserName("SANJAY SINGH BISHT");
+        String deviceToken=Utils.getInstance().getValue(Constants.DEVICE_TOKEN,"",PhoneAuthActivity.this);
+        if(deviceToken.length()==0)
+        {
+             deviceToken = FirebaseInstanceId.getInstance().getToken();
+
+        }
+        appuser.setDeviceToken(deviceToken);
+
+        appuser.setUserPhone(user.getPhoneNumber());
+        //save user phone number
+        Utils.getInstance().saveValue(Constants.PHONE_NO,user.getPhoneNumber(),PhoneAuthActivity.this);
+
+
+
+        mDatabase.child("users").child(user.getPhoneNumber()).setValue(appuser).addOnSuccessListener(PhoneAuthActivity.this, new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(PhoneAuthActivity.this, "informatin saved", Toast.LENGTH_LONG).show();
+
+
+            }
+        }).addOnFailureListener(PhoneAuthActivity.this, new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(PhoneAuthActivity.this, "error:" + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
+    }
     public void checkPlayerNum(final String phoneNum) {
 
         if (!TextUtils.isEmpty(phoneNum)) {
@@ -369,6 +386,7 @@ public class PhoneAuthActivity extends AppCompatActivity implements
 
     private void updateUI(FirebaseUser user) {
         if (user != null) {
+            saveUserInfo(user);
             updateUI(STATE_SIGNIN_SUCCESS, user);
         } else {
             updateUI(STATE_INITIALIZED);

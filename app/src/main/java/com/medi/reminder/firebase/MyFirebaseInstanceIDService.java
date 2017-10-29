@@ -39,7 +39,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-       Log.e(TAG, "Refreshed token: " + refreshedToken);
+        Log.e(TAG, "Refreshed token: " + refreshedToken);
         Utils.getInstance().saveValue(Constants.DEVICE_TOKEN,refreshedToken, MedicineAlertApp.getContextValue());
 
         // If you want to send messages to this application instance or

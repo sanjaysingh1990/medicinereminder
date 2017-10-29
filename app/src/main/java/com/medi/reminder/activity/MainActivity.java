@@ -36,12 +36,14 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.medi.reminder.ChooseDateTimePickerActivity;
 import com.medi.reminder.CompressImage;
 import com.medi.reminder.Constants;
 import com.medi.reminder.ImagePickerDialog;
 import com.medi.reminder.PermissionDenied;
 import com.medi.reminder.R;
+import com.medi.reminder.app.MedicineAlertApp;
 import com.medi.reminder.databinding.ActivityMainBinding;
 import com.medi.reminder.history.HistoryActivity;
 import com.medi.reminder.realm.IMedicineContract;
@@ -58,6 +60,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Random;
 
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class MainActivity extends AppCompatActivity implements Constants, IMedicineContract {
@@ -117,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
 
 
     public void initNavigationDrawer() {
-       // binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        // binding.drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         binding.navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -130,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
                         binding.drawer.closeDrawers();
                         break;
                     case R.id.settings:
-                       startActivity(new Intent(MainActivity.this, ActivitySettings.class));
+                        startActivity(new Intent(MainActivity.this, ActivitySettings.class));
                         break;
                     case R.id.history:
                         startActivity(new Intent(MainActivity.this, HistoryActivity.class));
@@ -138,6 +141,31 @@ public class MainActivity extends AppCompatActivity implements Constants, IMedic
                         overridePendingTransition(R.anim.right_in, R.anim.left_out);
                         break;
                     case R.id.logout:
+                        FirebaseAuth mAuth;
+                        mAuth = FirebaseAuth.getInstance();
+                        mAuth.signOut();
+                        Utils.getInstance().clearValues(MainActivity.this);
+
+                        Realm realm = MedicineAlertApp.getInstance();
+
+                    MedicinePresenter   presenter = new MedicinePresenter(new IMedicineContract() {
+                        @Override
+                        public void showStudents(RealmResults<Medicine> medicines) {
+
+                        }
+
+                        @Override
+                        public void showContacts(RealmResults<ContactData> contactsList) {
+
+                        }
+
+                        @Override
+                        public void showMessage(String message) {
+                         Utils.getInstance().showToast(MainActivity.this,message);
+                        }
+                    });
+
+                    presenter.delAllRecords();
                         finish();
 
                 }

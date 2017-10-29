@@ -33,5 +33,8 @@ public interface Constants {
 
     public static final String PHONE_NO="phone_no";
 
+    public static final String FILE="medicinealertapp";
+
+
 
 }

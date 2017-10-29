@@ -94,6 +94,7 @@ public class MedicineRepository implements IMedicineRepository {
             callback.onSuccess();
     }
 
+
     @Override
     public void deleteContactByPosition(int position, OnDeleteContactCallback callback) {
         Realm realm = MedicineAlertApp.getInstance();
@@ -108,7 +109,6 @@ public class MedicineRepository implements IMedicineRepository {
     }
 
 
-
     @Override
     public void getAllStudents(int historytype, OnGetAllStudentsCallback callback) {
         Realm realm = MedicineAlertApp.getInstance();
@@ -117,6 +117,23 @@ public class MedicineRepository implements IMedicineRepository {
             callback.onSuccess(results);
 
 
+    }
+
+    @Override
+    public void delAllRecords(OnClearAllDataCallback callback) {
+        Realm realm = MedicineAlertApp.getInstance();
+        realm.beginTransaction();
+
+        realm.where(Medicine.class).findAll().clear();
+        realm.where(ContactData.class).findAll().clear();
+
+        realm.commitTransaction();
+
+        realm.close();
+        if(callback!=null)
+        {
+            callback.onSuccess("data removed");
+        }
     }
 
 
